@@ -1,0 +1,199 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.App-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 40px;
+}
+
+.expense-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: #232323;
+  padding: 32px 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  width: 350px;
+  margin-bottom: 32px;
+}
+
+.expense-form .MuiInputAdornment-root {
+  padding: 0 !important;
+  margin: 0 !important;
+  height: 40px !important;
+  display: flex;
+  align-items: center;
+}
+
+.MuiInputAdornment-root svg {
+  color: #b0b0b0 !important;
+  font-size: 22px !important;
+  margin: 0 2px 0 0 !important;
+  border-radius: 6px;
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  height: 22px !important;
+  width: 22px !important;
+}
+
+.MuiIconButton-root {
+  padding: 4px !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  height: 32px !important;
+  width: 32px !important;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.expense-form input,
+.expense-form select {
+  background: #181818;
+  color: #fff;
+  border: 1px solid #333;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  padding: 10px 12px;
+  outline: none;
+  transition: border 0.2s;
+  margin-bottom: 0;
+}
+
+.expense-form select:focus {
+  border: 1.5px solid #4f8cff;
+  background: #222;
+}
+
+.expense-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position-x: 98%;
+  background-position-y: 50%;
+  padding-right: 32px;
+}
+
+.expense-form button {
+  width: 100%;
+  margin-top: 12px;
+  background: #181e26;
+  color: #fff;
+  border: 1.5px solid #333a;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(30,40,60,0.12);
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.2s, border 0.2s, transform 0.1s;
+}
+
+.expense-form button:hover, .expense-form button:focus {
+  background: linear-gradient(90deg, #6fa8ff 0%, #2333a6 100%);
+  transform: translateY(-2px) scale(1.03);
+  outline: none;
+}
+
+.expense-form button:hover, .expense-form button:focus {
+  background: #232b38;
+  border: 1.5px solid #4f8cff;
+  transform: translateY(-1px) scale(1.01);
+  outline: none;
+}
+
+.add-expense-btn {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  z-index: 100;
+  background: #181e26;
+  color: #fff;
+  border: 1.5px solid #333a;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(30,40,60,0.15);
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.2s, border 0.2s, transform 0.1s;
+  padding: 0;
+}
+
+.add-expense-btn:hover, .add-expense-btn:focus {
+  background: #232b38;
+  border: 1.5px solid #4f8cff;
+  transform: translateY(-2px) scale(1.06);
+  outline: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: #181818;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 95vw;
+  color: #fff;
+  position: relative;
+  animation: modalPop 0.25s;
+}
+
+@keyframes modalPop {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.close-btn {
+  background: transparent;
+  color: #aaa;
+  border: 1.2px solid #333a;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-left: 8px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: color 0.2s, border 0.2s, background 0.2s;
+}
+.close-btn:hover, .close-btn:focus {
+  color: #fff;
+  border: 1.2px solid #4f8cff;
+  background: #232b38;
+}
