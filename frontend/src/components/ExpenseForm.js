@@ -1,38 +1,88 @@
-import React from 'react';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import Box from '@mui/material/Box';
-import esLocale from 'date-fns/locale/es';
+import React from "react";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import Box from "@mui/material/Box";
+import esLocale from "date-fns/locale/es";
+import styles from "./ExpenseForm.module.css";
 
-const ExpenseForm = ({ onSubmit, onCancel, editingExpense, dateValue, setDateValue }) => {
+// Parsear fecha YYYY-MM-DD como local
+function parseLocalDate(dateString) {
+  if (!dateString) return null;
+  const [year, month, day] = dateString.split('-');
+  return new Date(Number(year), Number(month) - 1, Number(day));
+}
+
+const ExpenseForm = ({
+  onSubmit,
+  onCancel,
+  editingExpense,
+}) => {
   const categories = [
-    'Transporte',
-    'Salida',
-    'Salud',
-    'Comida',
-    'Casa',
-    'Regalos',
-    'Indumetaria',
-    'Cuidado Personal'
+    "Transporte",
+    "Salida",
+    "Salud",
+    "Comida",
+    "Casa",
+    "Regalos",
+    "Indumentaria",
+    "Cuidado Personal",
   ];
 
+  const [form, setForm] = React.useState({
+    category: editingExpense?.category || "",
+    subcategory: editingExpense?.subcategory || "",
+    place: editingExpense?.place || "",
+    paymentMethod: editingExpense?.paymentMethod || "",
+    paidBy: editingExpense?.paidBy || "",
+    amount: editingExpense?.amount || "",
+    date: editingExpense?.date ? parseLocalDate(editingExpense.date) : null
+  });
+
+  React.useEffect(() => {
+    setForm({
+      category: editingExpense?.category || "",
+      subcategory: editingExpense?.subcategory || "",
+      place: editingExpense?.place || "",
+      paymentMethod: editingExpense?.paymentMethod || "",
+      paidBy: editingExpense?.paidBy || "",
+      amount: editingExpense?.amount || "",
+      date: editingExpense?.date ? parseLocalDate(editingExpense.date) : null
+    });
+  }, [editingExpense]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(form);
+  };
+
+  const handleDateChange = (newValue) => {
+    setForm((prev) => ({ ...prev, date: newValue }));
+  };
+
   return (
-    <Box component="form" onSubmit={onSubmit} sx={{ mt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-      <FormControl fullWidth>
+    <Box component="form" onSubmit={handleSubmit} className={styles.formRoot}>
+      <FormControl fullWidth size="small">
         <InputLabel id="category-label">Categoría</InputLabel>
         <Select
           labelId="category-label"
           name="category"
           required
-          defaultValue={editingExpense?.category || ''}
+          value={form.category}
+          onChange={handleChange}
           label="Categoría"
+          size="small"
         >
           {categories.map((cat) => (
             <MenuItem key={cat} value={cat}>
@@ -42,14 +92,16 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense, dateValue, setDateVal
         </Select>
       </FormControl>
 
-      <FormControl fullWidth>
+      <FormControl fullWidth size="small">
         <InputLabel id="subcategory-label">Subcategoría</InputLabel>
         <Select
           labelId="subcategory-label"
           name="subcategory"
           required
-          defaultValue={editingExpense?.subcategory || ''}
+          value={form.subcategory}
+          onChange={handleChange}
           label="Subcategoría"
+          size="small"
         >
           <MenuItem value="">Subcategoría</MenuItem>
           <MenuItem value="Nafta">Nafta</MenuItem>
@@ -85,20 +137,25 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense, dateValue, setDateVal
       </FormControl>
 
       <TextField
-        name="local"
-        label="Local"
-        defaultValue={editingExpense?.local || ''}
+        name="place"
+        label="Lugar"
+        value={form.place}
+        onChange={handleChange}
         fullWidth
+        size="small"
+        InputProps={{ className: styles.inputDark }}
       />
 
-      <FormControl fullWidth>
+      <FormControl fullWidth size="small">
         <InputLabel id="paymentMethod-label">Medio de Pago</InputLabel>
         <Select
           labelId="paymentMethod-label"
           name="paymentMethod"
           required
-          defaultValue={editingExpense?.paymentMethod || ''}
+          value={form.paymentMethod}
+          onChange={handleChange}
           label="Medio de Pago"
+          size="small"
         >
           <MenuItem value="">Medio de Pago</MenuItem>
           <MenuItem value="Crédito">Crédito</MenuItem>
@@ -106,14 +163,16 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense, dateValue, setDateVal
         </Select>
       </FormControl>
 
-      <FormControl fullWidth>
+      <FormControl fullWidth size="small">
         <InputLabel id="paidBy-label">Pagado por</InputLabel>
         <Select
           labelId="paidBy-label"
           name="paidBy"
           required
-          defaultValue={editingExpense?.paidBy || ''}
+          value={form.paidBy}
+          onChange={handleChange}
           label="Pagado por"
+          size="small"
         >
           <MenuItem value="">Pagado por</MenuItem>
           <MenuItem value="José">José</MenuItem>
@@ -125,27 +184,39 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense, dateValue, setDateVal
         name="amount"
         label="Monto"
         type="number"
-        inputProps={{ step: '0.01' }}
-        defaultValue={editingExpense?.amount || ''}
+        inputProps={{ step: "0.01" }}
+        value={form.amount}
+        onChange={handleChange}
         required
         fullWidth
+        size="small"
+        InputProps={{ className: styles.inputDark }}
       />
 
-      <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={esLocale}>
+      <LocalizationProvider
+        dateAdapter={AdapterDateFns}
+        adapterLocale={esLocale}
+      >
         <DatePicker
           label="Fecha"
-          value={dateValue}
-          onChange={(newValue) => setDateValue(newValue)}
-          renderInput={(params) => <TextField {...params} fullWidth />}
+          value={form.date}
+          onChange={handleDateChange}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              size: "small",
+              InputProps: { className: styles.inputDark },
+            },
+          }}
         />
       </LocalizationProvider>
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
-        <Button variant="outlined" onClick={onCancel}>
+      <Box className={styles.buttonRow}>
+        <Button variant="outlined" onClick={onCancel} size="small">
           Cancelar
         </Button>
-        <Button type="submit" variant="contained">
-          {editingExpense ? 'Actualizar' : 'Agregar'}
+        <Button type="submit" variant="contained" size="small">
+          {editingExpense ? "Actualizar" : "Agregar"}
         </Button>
       </Box>
     </Box>

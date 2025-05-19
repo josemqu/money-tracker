@@ -1,0 +1,36 @@
+.formRoot {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-top: 8px;
+  padding: 0;
+}
+
+.inputDark {
+  background: #232b38;
+  color: #fff;
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.dialogTitle {
+  background: #232b38;
+  color: #fff;
+  font-weight: 700;
+  padding-bottom: 8px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.dialogContent {
+  background: #232323;
+  color: #fff;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  padding: 24px;
+}

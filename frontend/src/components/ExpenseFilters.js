@@ -1,6 +1,6 @@
-import React from 'react';
-import { TextField, MenuItem, Box, IconButton, Tooltip } from '@mui/material';
-import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
+import React from "react";
+import { TextField, MenuItem, Box, IconButton, Tooltip } from "@mui/material";
+import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 
 export default function ExpenseFilters({ filters, setFilters }) {
   const handleFilterChange = (e) => {
@@ -9,12 +9,12 @@ export default function ExpenseFilters({ filters, setFilters }) {
   };
 
   return (
-    <Box sx={{ display: 'flex', gap: 2, mb: 3, alignItems: 'center' }}>
+    <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
       <TextField
         select
         label="Categoría"
         name="category"
-        value={filters.category || ''}
+        value={filters.category || ""}
         onChange={handleFilterChange}
         variant="outlined"
         size="small"
@@ -35,7 +35,7 @@ export default function ExpenseFilters({ filters, setFilters }) {
         select
         label="Subcategoría"
         name="subcategory"
-        value={filters.subcategory || ''}
+        value={filters.subcategory || ""}
         onChange={handleFilterChange}
         variant="outlined"
         size="small"
@@ -81,9 +81,9 @@ export default function ExpenseFilters({ filters, setFilters }) {
       </TextField>
 
       <TextField
-        label="Buscar Local"
-        name="local"
-        value={filters.local || ''}
+        label="Lugar"
+        name="place"
+        value={filters.place || ""}
         onChange={handleFilterChange}
         variant="outlined"
         size="small"
@@ -92,8 +92,10 @@ export default function ExpenseFilters({ filters, setFilters }) {
       <Tooltip title="Limpiar filtros">
         <IconButton
           aria-label="limpiar filtros"
-          onClick={() => setFilters({ category: '', local: '', subcategory: '' })}
-          sx={{ ml: 1, color: '#bbb' }}
+          onClick={() =>
+            setFilters({ category: "", place: "", subcategory: "" })
+          }
+          sx={{ ml: 1, color: "#bbb" }}
         >
           <DeleteSweepIcon />
         </IconButton>

@@ -1,30 +1,34 @@
 import React from 'react';
 import ExpenseItem from './ExpenseItem';
+import CATEGORY_COLORS from '../constants/categoryColors';
 import { FaHome, FaCar, FaUtensils, FaHeartbeat, FaGift, FaTshirt, FaUserFriends, FaRegStar, FaQuestionCircle } from 'react-icons/fa';
 
 const ExpenseList = ({ expenses, onEdit, onDelete }) => {
   const getCategoryIcon = (category) => {
-    switch (category) {
-      case 'Casa':
-        return <FaHome color="#bbb" size={20} style={{ marginRight: 8 }} />;
-      case 'Transporte':
-        return <FaCar color="#bbb" size={20} style={{ marginRight: 8 }} />;
-      case 'Comida':
-        return <FaUtensils color="#bbb" size={20} style={{ marginRight: 8 }} />;
-      case 'Salud':
-        return <FaHeartbeat color="#bbb" size={20} style={{ marginRight: 8 }} />;
-      case 'Regalos':
-        return <FaGift color="#bbb" size={20} style={{ marginRight: 8 }} />;
-      case 'Indumetaria':
-        return <FaTshirt color="#bbb" size={20} style={{ marginRight: 8 }} />;
-      case 'Cuidado Personal':
-        return <FaUserFriends color="#bbb" size={20} style={{ marginRight: 8 }} />;
-      case 'Salida':
-        return <FaRegStar color="#bbb" size={20} style={{ marginRight: 8 }} />;
-      default:
-        return <FaQuestionCircle color="#bbb" size={20} style={{ marginRight: 8 }} />;
-    }
-  };
+  // Corrige typo en "Indumetaria" a "Indumentaria" para el diccionario
+  const normalized = category === 'Indumetaria' ? 'Indumentaria' : category;
+  const color = CATEGORY_COLORS[normalized]?.color || '#bbb';
+  switch (normalized) {
+    case 'Casa':
+      return <FaHome color={color} size={20} />;
+    case 'Transporte':
+      return <FaCar color={color} size={20} />;
+    case 'Comida':
+      return <FaUtensils color={color} size={20} />;
+    case 'Salud':
+      return <FaHeartbeat color={color} size={20} />;
+    case 'Regalos':
+      return <FaGift color={color} size={20} />;
+    case 'Indumentaria':
+      return <FaTshirt color={color} size={20} />;
+    case 'Cuidado Personal':
+      return <FaUserFriends color={color} size={20} />;
+    case 'Salida':
+      return <FaRegStar color={color} size={20} />;
+    default:
+      return <FaQuestionCircle color={color} size={20} />;
+  }
+};
 
   return (
     <ul style={{ listStyle: 'none', padding: 0, width: '100%', maxWidth: 500, margin: '32px auto 0 auto' }}>

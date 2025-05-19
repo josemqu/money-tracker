@@ -1,0 +1,92 @@
+.expenseCard {
+  background: #232323;
+  color: #fff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  padding: 10px 14px 10px 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.16);
+  position: relative;
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 10px;
+}
+
+.headerRow > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headerRow .localBox {
+  margin-bottom: 0;
+  width: auto;
+  padding: 4px 8px;
+}
+
+.dateBox {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.96em;
+  color: #bfc6d1;
+}
+
+.amountBadge {
+  background: #1b222c;
+  color: #fff;
+  border-radius: 10px;
+  padding: 5px 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+  border: 1px solid #232b38;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  min-width: 85px;
+  font-size: 1.08em;
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.categoryRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 1.05em;
+}
+
+.localBox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(6, 78, 59, 0.18);
+  border-radius: 5px;
+  padding: 4px 8px;
+  width: fit-content;
+  margin-bottom: 4px;
+  font-size: 0.97em;
+}
+
+.actionsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+  padding-top: 0;
+  gap: 6px;
+}
+
+.chipsRow {
+  display: flex;
+  gap: 5px;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 2px;
+}

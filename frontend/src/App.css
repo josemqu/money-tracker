@@ -1,7 +1,10 @@
 body {
+  /* Para evitar zoom en inputs en iOS */
+  -webkit-text-size-adjust: 100%;
+
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -18,13 +21,16 @@ body {
 }
 
 .expense-form {
+  max-width: 100%;
+  box-sizing: border-box;
+
   display: flex;
   flex-direction: column;
   gap: 16px;
   background: #232323;
   padding: 32px 24px;
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   width: 350px;
   margin-bottom: 32px;
 }
@@ -99,19 +105,21 @@ body {
   font-size: 1.2rem;
   font-weight: 600;
   padding: 16px;
-  box-shadow: 0 2px 8px rgba(30,40,60,0.12);
+  box-shadow: 0 2px 8px rgba(30, 40, 60, 0.12);
   cursor: pointer;
   letter-spacing: 1px;
   transition: background 0.2s, border 0.2s, transform 0.1s;
 }
 
-.expense-form button:hover, .expense-form button:focus {
+.expense-form button:hover,
+.expense-form button:focus {
   background: linear-gradient(90deg, #6fa8ff 0%, #2333a6 100%);
   transform: translateY(-2px) scale(1.03);
   outline: none;
 }
 
-.expense-form button:hover, .expense-form button:focus {
+.expense-form button:hover,
+.expense-form button:focus {
   background: #232b38;
   border: 1.5px solid #4f8cff;
   transform: translateY(-1px) scale(1.01);
@@ -134,14 +142,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 16px rgba(30,40,60,0.15);
+  box-shadow: 0 4px 16px rgba(30, 40, 60, 0.15);
   cursor: pointer;
   letter-spacing: 1px;
   transition: background 0.2s, border 0.2s, transform 0.1s;
   padding: 0;
 }
 
-.add-expense-btn:hover, .add-expense-btn:focus {
+.add-expense-btn:hover,
+.add-expense-btn:focus {
   background: #232b38;
   border: 1.5px solid #4f8cff;
   transform: translateY(-2px) scale(1.06);
@@ -150,8 +159,11 @@ body {
 
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.6);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,14 +172,18 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-content {
   background: #181818;
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   padding: 32px 24px 24px 24px;
   min-width: 320px;
   max-width: 95vw;
@@ -177,8 +193,455 @@ body {
 }
 
 @keyframes modalPop {
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* --- MOBILE STYLES --- */
+
+/* General container styles */
+.App,
+.main-content,
+section {
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Modal content responsive */
+.modal-content {
+  background: #181818;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  padding: 32px 24px 24px 24px;
+  min-width: 280px;
+  max-width: 95vw;
+  width: 100%;
+  color: #fff;
+  position: relative;
+  animation: modalPop 0.25s;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .App,
+  .main-content,
+  section {
+    max-width: 100vw;
+    padding-left: 2vw;
+    padding-right: 2vw;
+  }
+  .expense-form,
+  .modal-content,
+  .filters-container,
+  .expense-list,
+  ul,
+  li,
+  .expense-item,
+  .charts-section {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .expense-form input,
+  .expense-form select {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .charts-section svg,
+  .charts-section canvas {
+    max-width: 98vw !important;
+  }
+  body {
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-content {
+    max-width: 500px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 4vw;
+    padding-right: 4vw;
+    box-sizing: border-box;
+  }
+  .filters-container,
+  .filters {
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+    gap: 10px !important;
+    align-items: stretch !important;
+    margin-bottom: 10px !important;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .filters-container > *,
+  .filters > * {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-bottom: 6px !important;
+    box-sizing: border-box;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  ul,
+  .expense-list {
+    padding-left: 0;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  li,
+  .expense-item {
+    font-size: 1.04rem;
+    padding: 14px 0;
+    margin: 0 0 14px 0;
+    width: 100%;
+    max-width: 100%;
+    min-width: unset;
+    box-sizing: border-box;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  }
+  /* Gráficos responsivos */
+  .charts-section {
+    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    padding-bottom: 12px;
+  }
+  .charts-section svg,
+  .charts-section canvas {
+    max-width: 96vw !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+/* Tabs sticky arriba */
+.MuiTabs-root {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #181c24;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: -16px;
+  margin-right: -16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+.MuiTab-root {
+  font-size: 1.1rem !important;
+  min-width: 0 !important;
+  width: 50vw !important;
+  padding: 10px 0 !important;
+}
+.App-header {
+  padding-top: 12px;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+.expense-form {
+  width: 100vw;
+  min-width: unset;
+  max-width: unset;
+  padding: 12px 2vw;
+  margin-bottom: 18px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+.expense-form input,
+.expense-form select {
+  font-size: 1.04rem;
+  padding: 12px 10px;
+  border-radius: 12px;
+}
+.expense-form button {
+  font-size: 1.04rem;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 12px;
+}
+.add-expense-btn {
+  width: 54px;
+  height: 54px;
+  font-size: 1.2rem;
+  right: 14px;
+  bottom: 14px;
+  border-radius: 50%;
+}
+.modal-content {
+  min-width: unset;
+  max-width: 98vw;
+  width: 98vw;
+  padding: 12px 2vw 12px 2vw;
+  border-radius: 16px;
+}
+.close-btn {
+  font-size: 1rem;
+  padding: 8px 18px;
+  margin-left: 2px;
+  border-radius: 10px;
+}
+ul,
+.expense-list {
+  padding-left: 0;
+  margin: 0;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+li,
+.expense-item {
+  font-size: 1.04rem;
+  padding: 14px 0;
+  margin: 0 0 14px 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: unset;
+  box-sizing: border-box;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+}
+/* Filtros en columna y full width */
+.filters-container,
+.filters {
+  flex-direction: column !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box;
+  gap: 10px !important;
+  align-items: stretch !important;
+  margin-bottom: 10px !important;
+  padding-left: 0;
+  padding-right: 0;
+}
+.filters-container > *,
+.filters > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-bottom: 6px !important;
+  box-sizing: border-box;
+  padding-left: 0;
+  padding-right: 0;
+}
+/* Gráficos responsivos */
+.charts-section {
+  overflow-x: auto;
+  width: 100vw;
+  max-width: 100vw;
+  padding-bottom: 12px;
+}
+.charts-section svg,
+.charts-section canvas {
+  max-width: 96vw !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+
+.App-header {
+  padding-top: 12px;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+.expense-form {
+  width: 98vw;
+  min-width: unset;
+  max-width: unset;
+  padding: 12px 2vw;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+.expense-form input,
+.expense-form select {
+  font-size: 1rem;
+  padding: 8px 8px;
+}
+.expense-form button {
+  font-size: 1rem;
+  padding: 12px;
+  margin-top: 8px;
+}
+.add-expense-btn {
+  width: 48px;
+  height: 48px;
+  font-size: 1rem;
+  right: 12px;
+  bottom: 12px;
+}
+.modal-content {
+  min-width: unset;
+  max-width: 98vw;
+  width: 98vw;
+  padding: 12px 2vw 12px 2vw;
+  border-radius: 12px;
+}
+.close-btn {
+  font-size: 0.95rem;
+  padding: 6px 12px;
+  margin-left: 2px;
+}
+ul,
+.expense-list {
+  padding-left: 0;
+  margin: 0;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+li,
+.expense-item {
+  font-size: 1rem;
+  padding: 10px 2vw;
+  margin: 0 0 8px 0;
+  width: 96vw;
+  max-width: 96vw;
+  min-width: unset;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+/* Filtros en columna y full width */
+.filters-container,
+.MuiTabs-root,
+.filters {
+  flex-direction: column !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  box-sizing: border-box;
+  gap: 8px !important;
+  align-items: stretch !important;
+}
+.filters-container > *,
+.filters > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-bottom: 4px !important;
+}
+.expense-form {
+  width: 98vw;
+  min-width: unset;
+  max-width: unset;
+  padding: 12px 2vw;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+.expense-form input,
+.expense-form select {
+  font-size: 1rem;
+  padding: 8px 8px;
+}
+.expense-form button {
+  font-size: 1rem;
+  padding: 12px;
+  margin-top: 8px;
+}
+.add-expense-btn {
+  width: 48px;
+  height: 48px;
+  font-size: 1rem;
+  right: 12px;
+  bottom: 12px;
+}
+.modal-content {
+  min-width: unset;
+  max-width: 98vw;
+  width: 98vw;
+  padding: 12px 2vw 12px 2vw;
+  border-radius: 12px;
+}
+.close-btn {
+  font-size: 0.95rem;
+  padding: 6px 12px;
+  margin-left: 2px;
+}
+ul,
+.expense-list {
+  padding-left: 0;
+  margin: 0;
+  width: 100vw;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+li,
+.expense-item {
+  font-size: 1rem;
+  padding: 10px 2vw;
+  margin: 0 0 8px 0;
+  width: 96vw;
+  max-width: 96vw;
+  min-width: unset;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+/* Filtros en columna y full width */
+.filters-container,
+.MuiTabs-root,
+.filters {
+  flex-direction: column !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  box-sizing: border-box;
+  gap: 8px !important;
+  align-items: stretch !important;
+}
+.filters-container > *,
+.filters > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin-bottom: 4px !important;
+}
+
+.MuiTabs-root {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin: 0 auto 12px auto !important;
+  box-sizing: border-box;
+}
+.MuiTabs-flexContainer {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100vw !important;
+  max-width: 420px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box;
+}
+.MuiTab-root {
+  min-width: 0 !important;
+  flex: 1 1 0;
+  font-size: 1.05rem;
+  max-width: 210px;
+  text-align: center;
 }
 
 .close-btn {
@@ -192,7 +655,8 @@ body {
   cursor: pointer;
   transition: color 0.2s, border 0.2s, background 0.2s;
 }
-.close-btn:hover, .close-btn:focus {
+.close-btn:hover,
+.close-btn:focus {
   color: #fff;
   border: 1.2px solid #4f8cff;
   background: #232b38;
