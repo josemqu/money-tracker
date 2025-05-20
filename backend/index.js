@@ -9,7 +9,6 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-
 const PORT = process.env.PORT || 5002;
 
 // MongoDB connection
@@ -34,7 +33,9 @@ app.post("/api/subcategories", async (req, res) => {
     await subcategory.save();
     res.status(201).json({ message: "Subcategory registered", subcategory });
   } catch (err) {
-    res.status(500).json({ error: "Error registering subcategory", details: err });
+    res
+      .status(500)
+      .json({ error: "Error registering subcategory", details: err });
   }
 });
 
@@ -43,28 +44,36 @@ app.get("/api/subcategories", async (req, res) => {
     const subcategories = await Subcategory.find();
     res.json(subcategories);
   } catch (err) {
-    res.status(500).json({ error: "Error fetching subcategories", details: err });
+    res
+      .status(500)
+      .json({ error: "Error fetching subcategories", details: err });
   }
 });
 
 // Expense model
-const Expense = require('./models/Expense');
+const Expense = require("./models/Expense");
 
 app.post("/api/expenses", async (req, res) => {
   try {
     const expense = new Expense(req.body);
+    console.log({ expense });
     await expense.save();
     // Populate subcategory before sending response
-    const populatedExpense = await Expense.findById(expense._id).populate('subcategory');
-    res.status(201).json({ message: "Expense registered", expense: populatedExpense });
+    const populatedExpense = await Expense.findById(expense._id).populate(
+      "subcategory"
+    );
+    res
+      .status(201)
+      .json({ message: "Expense registered", expense: populatedExpense });
   } catch (err) {
+    console.error("Error registering expense:", err);
     res.status(500).json({ error: "Error registering expense", details: err });
   }
 });
 
 app.get("/api/expenses", async (req, res) => {
   try {
-    const expenses = await Expense.find().populate('subcategory');
+    const expenses = await Expense.find().populate("subcategory");
     res.json(expenses);
   } catch (err) {
     res.status(500).json({ error: "Error fetching expenses", details: err });
@@ -102,7 +111,7 @@ app.put("/api/expenses/:id", async (req, res) => {
   try {
     const expense = await Expense.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-    }).populate('subcategory');
+    }).populate("subcategory");
     if (expense) {
       res.json({ message: "Expense updated", expense });
     } else {
