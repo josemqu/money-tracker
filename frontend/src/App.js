@@ -137,7 +137,8 @@ function App() {
           onChange={(_, v) => setMainTab(v)}
           textColor="inherit"
           indicatorColor="primary"
-          sx={{ mb: 2 }}
+          indicatorHeight={4}
+          sx={{ mb: 2, zIndex: 1000 }}
         >
           <Tab label="Gastos" />
           <Tab label="Gráficos" />

@@ -82,9 +82,6 @@ export default function ChartsSection({ expenses }) {
           textColor="inherit"
           indicatorColor="primary"
           variant="fullWidth"
-          TabIndicatorProps={{
-            style: { height: 4, background: "#1976d2", borderRadius: 2 },
-          }}
         >
           <Tab
             label={"Por Categoría"}
