@@ -4,5 +4,8 @@
   },
   "scripts": {
     "start": "concurrently \"npm start --prefix backend\" \"npm start --prefix frontend\""
+  },
+  "dependencies": {
+    "node-fetch": "^2.7.0"
   }
 }

@@ -48,22 +48,15 @@ app.get("/subcategories", async (req, res) => {
 });
 
 // Expense model
-const expenseSchema = new mongoose.Schema({
-  category: String,
-  subcategory: String,
-  place: String,
-  paymentMethod: String,
-  paidBy: String,
-  amount: Number,
-  date: String,
-});
-const Expense = mongoose.model("Expense", expenseSchema);
+const Expense = require('./models/Expense');
 
 app.post("/expenses", async (req, res) => {
   try {
     const expense = new Expense(req.body);
     await expense.save();
-    res.status(201).json({ message: "Expense registered", expense });
+    // Populate subcategory before sending response
+    const populatedExpense = await Expense.findById(expense._id).populate('subcategory');
+    res.status(201).json({ message: "Expense registered", expense: populatedExpense });
   } catch (err) {
     res.status(500).json({ error: "Error registering expense", details: err });
   }
@@ -71,7 +64,7 @@ app.post("/expenses", async (req, res) => {
 
 app.get("/expenses", async (req, res) => {
   try {
-    const expenses = await Expense.find();
+    const expenses = await Expense.find().populate('subcategory');
     res.json(expenses);
   } catch (err) {
     res.status(500).json({ error: "Error fetching expenses", details: err });
@@ -109,7 +102,7 @@ app.put("/expenses/:id", async (req, res) => {
   try {
     const expense = await Expense.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-    });
+    }).populate('subcategory');
     if (expense) {
       res.json({ message: "Expense updated", expense });
     } else {
