@@ -28,7 +28,7 @@ mongoose
   });
 
 // Subcategory endpoints
-app.post("/subcategories", async (req, res) => {
+app.post("/api/subcategories", async (req, res) => {
   try {
     const subcategory = new Subcategory(req.body);
     await subcategory.save();
@@ -38,7 +38,7 @@ app.post("/subcategories", async (req, res) => {
   }
 });
 
-app.get("/subcategories", async (req, res) => {
+app.get("/api/subcategories", async (req, res) => {
   try {
     const subcategories = await Subcategory.find();
     res.json(subcategories);
@@ -50,7 +50,7 @@ app.get("/subcategories", async (req, res) => {
 // Expense model
 const Expense = require('./models/Expense');
 
-app.post("/expenses", async (req, res) => {
+app.post("/api/expenses", async (req, res) => {
   try {
     const expense = new Expense(req.body);
     await expense.save();
@@ -62,7 +62,7 @@ app.post("/expenses", async (req, res) => {
   }
 });
 
-app.get("/expenses", async (req, res) => {
+app.get("/api/expenses", async (req, res) => {
   try {
     const expenses = await Expense.find().populate('subcategory');
     res.json(expenses);
@@ -72,7 +72,7 @@ app.get("/expenses", async (req, res) => {
 });
 
 // Eliminar gasto
-app.delete("/expenses/:id", async (req, res) => {
+app.delete("/api/expenses/:id", async (req, res) => {
   try {
     const result = await Expense.findByIdAndDelete(req.params.id);
     if (result) {
@@ -86,7 +86,7 @@ app.delete("/expenses/:id", async (req, res) => {
 });
 
 // Eliminar todos los gastos
-app.delete("/expenses/all", async (req, res) => {
+app.delete("/api/expenses/all", async (req, res) => {
   try {
     await Expense.deleteMany({});
     res.json({ message: "Todos los gastos eliminados" });
@@ -98,7 +98,7 @@ app.delete("/expenses/all", async (req, res) => {
 });
 
 // Editar gasto
-app.put("/expenses/:id", async (req, res) => {
+app.put("/api/expenses/:id", async (req, res) => {
   try {
     const expense = await Expense.findByIdAndUpdate(req.params.id, req.body, {
       new: true,

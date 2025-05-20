@@ -1,4 +1,4 @@
-export const API_URL = process.env.REACT_APP_API_URL || "https://money-tracker-8k24.onrender.com/expenses";
+export const API_URL = process.env.REACT_APP_API_URL || "https://money-tracker-8k24.onrender.com/api/expenses";
 
 export async function fetchExpenses() {
   const response = await fetch(API_URL);
