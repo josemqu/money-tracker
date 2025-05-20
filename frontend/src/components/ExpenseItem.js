@@ -101,7 +101,9 @@ export default function ExpenseItem({
         </Typography>
         {expense.subcategory && (
           <Typography variant="body2" sx={{ color: "#ccc", ml: 1 }}>
-            {expense.subcategory}
+            {typeof expense.subcategory === "object"
+              ? expense.subcategory.name
+              : expense.subcategory}
           </Typography>
         )}
       </div>

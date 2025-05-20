@@ -50,6 +50,10 @@ const ExpenseList = ({ expenses, onEdit, onDelete }) => {
     >
       {[...expenses]
         .filter(expense => expense && expense.category)
+        .map(expense => ({
+          ...expense,
+          subcategory: typeof expense.subcategory === "object" ? expense.subcategory.name : expense.subcategory
+        }))
         .sort((a, b) => {
           const da = a.date ? new Date(a.date) : new Date(0);
           const db = b.date ? new Date(b.date) : new Date(0);

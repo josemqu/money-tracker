@@ -12,6 +12,8 @@ import FormControl from "@mui/material/FormControl";
 import Box from "@mui/material/Box";
 import esLocale from "date-fns/locale/es";
 import styles from "./ExpenseForm.module.css";
+import PAYMENT_METHODS from "../constants/paymentMethods";
+import USERS from "../constants/users";
 
 // Parsear fecha YYYY-MM-DD como local
 function parseLocalDate(dateString) {
@@ -38,7 +40,7 @@ const ExpenseForm = ({
 
   const [form, setForm] = React.useState({
     category: editingExpense?.category || "",
-    subcategory: editingExpense?.subcategory || "",
+    subcategory: editingExpense?.subcategory?._id || editingExpense?.subcategory || "",
     place: editingExpense?.place || "",
     paymentMethod: editingExpense?.paymentMethod || "",
     paidBy: editingExpense?.paidBy || "",
@@ -54,7 +56,7 @@ const ExpenseForm = ({
   React.useEffect(() => {
     setForm({
       category: editingExpense?.category || "",
-      subcategory: editingExpense?.subcategory || "",
+      subcategory: editingExpense?.subcategory?._id || editingExpense?.subcategory || "",
       place: editingExpense?.place || "",
       paymentMethod: editingExpense?.paymentMethod || "",
       paidBy: editingExpense?.paidBy || "",
@@ -91,10 +93,10 @@ const ExpenseForm = ({
       });
       if (result && result.subcategory) {
         setSubcategories((prev) => [...prev, result.subcategory]);
-        setForm((prev) => ({ ...prev, subcategory: result.subcategory.name, newSubcategory: "" }));
-      } else if (result && result.name) {
+        setForm((prev) => ({ ...prev, subcategory: result.subcategory._id, newSubcategory: "" }));
+      } else if (result && result._id) {
         setSubcategories((prev) => [...prev, result]);
-        setForm((prev) => ({ ...prev, subcategory: result.name, newSubcategory: "" }));
+        setForm((prev) => ({ ...prev, subcategory: result._id, newSubcategory: "" }));
       }
     } finally {
       setAddingSubcat(false);
@@ -106,7 +108,8 @@ const ExpenseForm = ({
     if (form.newSubcategory.trim() && form.category) {
       // Si hay subcategoría nueva, primero la agrega y luego envía el gasto
       handleAddSubcategory().then(() => {
-        onSubmit({ ...form, subcategory: form.newSubcategory.trim(), newSubcategory: undefined });
+        // El _id ya queda en form.subcategory
+        onSubmit({ ...form, newSubcategory: undefined });
       });
     } else {
       onSubmit(form);
@@ -153,8 +156,9 @@ const ExpenseForm = ({
           <MenuItem value="">Subcategoría</MenuItem>
           {subcategories
             .filter((s) => s.category === form.category)
+            .sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }))
             .map((s) => (
-              <MenuItem key={s._id || s.name} value={s.name}>
+              <MenuItem key={s._id} value={s._id}>
                 {s.name}
               </MenuItem>
             ))}
@@ -203,8 +207,11 @@ const ExpenseForm = ({
           size="small"
         >
           <MenuItem value="">Medio de Pago</MenuItem>
-          <MenuItem value="Crédito">Crédito</MenuItem>
-          <MenuItem value="Contado">Contado</MenuItem>
+          {[...PAYMENT_METHODS.map(m => m.value), "Contado"]
+            .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
+            .map((method) => (
+              <MenuItem key={method} value={method}>{method}</MenuItem>
+            ))}
         </Select>
       </FormControl>
 
@@ -220,8 +227,11 @@ const ExpenseForm = ({
           size="small"
         >
           <MenuItem value="">Pagado por</MenuItem>
-          <MenuItem value="José">José</MenuItem>
-          <MenuItem value="Maru">Maru</MenuItem>
+          {USERS.map(u => u.value)
+            .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
+            .map((user) => (
+              <MenuItem key={user} value={user}>{user}</MenuItem>
+            ))}
         </Select>
       </FormControl>
 

@@ -168,7 +168,13 @@ export default function ChartsSection({ expenses }) {
                 ? filteredExpenses
                 : filteredExpenses.filter(
                     (e) => new Date(e.date).getMonth() === selectedMonth
-                  )
+                  ).map((e) => ({
+                    ...e,
+                    subcategory:
+                      typeof e.subcategory === "object"
+                        ? e.subcategory.name
+                        : e.subcategory,
+                  }))
             }
           />
         )}

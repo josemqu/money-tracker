@@ -23,7 +23,6 @@ body {
 .expense-form {
   max-width: 100%;
   box-sizing: border-box;
-
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -245,8 +244,6 @@ section {
   .expense-form,
   .modal-content,
   .filters-container,
-  .expense-list,
-  ul,
   li,
   .expense-item,
   .charts-section {
@@ -303,14 +300,6 @@ section {
     box-sizing: border-box;
     padding-left: 0;
     padding-right: 0;
-  }
-  ul,
-  .expense-list {
-    padding-left: 0;
-    margin: 0;
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
   }
   li,
   .expense-item {
@@ -406,14 +395,6 @@ section {
   margin-left: 2px;
   border-radius: 10px;
 }
-ul,
-.expense-list {
-  padding-left: 0;
-  margin: 0;
-  width: 100vw;
-  max-width: 100vw;
-  box-sizing: border-box;
-}
 li,
 .expense-item {
   font-size: 1.04rem;
@@ -507,14 +488,6 @@ li,
   padding: 6px 12px;
   margin-left: 2px;
 }
-ul,
-.expense-list {
-  padding-left: 0;
-  margin: 0;
-  width: 100vw;
-  max-width: 100vw;
-  box-sizing: border-box;
-}
 li,
 .expense-item {
   font-size: 1rem;
@@ -580,14 +553,6 @@ li,
   font-size: 0.95rem;
   padding: 6px 12px;
   margin-left: 2px;
-}
-ul,
-.expense-list {
-  padding-left: 0;
-  margin: 0;
-  width: 100vw;
-  max-width: 100vw;
-  box-sizing: border-box;
 }
 li,
 .expense-item {

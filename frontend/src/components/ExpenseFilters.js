@@ -3,6 +3,32 @@ import { TextField, MenuItem, Box, IconButton, Tooltip } from "@mui/material";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 
 export default function ExpenseFilters({ filters, setFilters }) {
+  const [categories, setCategories] = React.useState([]);
+  const [subcategories, setSubcategories] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setLoading(true);
+    Promise.all([
+      fetch('/api/categories').then(res => res.json()),
+      fetch('/api/subcategories').then(res => res.json())
+    ]).then(([cats, subs]) => {
+      console.log('Categorías recibidas:', cats);
+      console.log('Subcategorías recibidas:', subs);
+      if (!Array.isArray(cats) || cats.length === 0) {
+        console.warn('No se recibieron categorías desde la API');
+      }
+      if (!Array.isArray(subs) || subs.length === 0) {
+        console.warn('No se recibieron subcategorías desde la API');
+      }
+      setCategories(Array.isArray(cats) ? cats : []);
+      setSubcategories(Array.isArray(subs) ? subs : []);
+      setLoading(false);
+    }).catch((err) => {
+      console.error('Error al cargar categorías o subcategorías:', err);
+      setLoading(false);
+    });
+  }, []);
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
@@ -21,14 +47,13 @@ export default function ExpenseFilters({ filters, setFilters }) {
         sx={{ minWidth: 140 }}
       >
         <MenuItem value="">Todas</MenuItem>
-        <MenuItem value="Casa">Casa</MenuItem>
-        <MenuItem value="Comida">Comida</MenuItem>
-        <MenuItem value="Cuidado personal">Cuidado personal</MenuItem>
-        <MenuItem value="Indumentaria">Indumentaria</MenuItem>
-        <MenuItem value="Regalos">Regalos</MenuItem>
-        <MenuItem value="Salud">Salud</MenuItem>
-        <MenuItem value="Salida">Salida</MenuItem>
-        <MenuItem value="Transporte">Transporte</MenuItem>
+        {categories
+          .map(cat => (typeof cat === 'string' ? cat : cat.name))
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
+          .map((cat) => (
+            <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+          ))}
       </TextField>
 
       <TextField
@@ -42,42 +67,14 @@ export default function ExpenseFilters({ filters, setFilters }) {
         sx={{ minWidth: 140 }}
       >
         <MenuItem value="">Todas</MenuItem>
-        <MenuItem value="Almuerzo">Almuerzo</MenuItem>
-        <MenuItem value="Bazar">Bazar</MenuItem>
-        <MenuItem value="Bar">Bar</MenuItem>
-        <MenuItem value="Brunch">Brunch</MenuItem>
-        <MenuItem value="Calzado">Calzado</MenuItem>
-        <MenuItem value="Carniceria">Carniceria</MenuItem>
-        <MenuItem value="Café">Café</MenuItem>
-        <MenuItem value="Consulta">Consulta</MenuItem>
-        <MenuItem value="Cumpleaños">Cumpleaños</MenuItem>
-        <MenuItem value="Delivery">Delivery</MenuItem>
-        <MenuItem value="Dietética">Dietética</MenuItem>
-        <MenuItem value="Entretenimiento">Entretenimiento</MenuItem>
-        <MenuItem value="Expensas">Expensas</MenuItem>
-        <MenuItem value="Farmacia">Farmacia</MenuItem>
-        <MenuItem value="Ferretería">Ferretería</MenuItem>
-        <MenuItem value="Gas">Gas</MenuItem>
-        <MenuItem value="Granja">Granja</MenuItem>
-        <MenuItem value="Heladeria">Heladeria</MenuItem>
-        <MenuItem value="Internet">Internet</MenuItem>
-        <MenuItem value="Kiosco">Kiosco</MenuItem>
-        <MenuItem value="Libreria">Libreria</MenuItem>
-        <MenuItem value="Limpieza">Limpieza</MenuItem>
-        <MenuItem value="Luz">Luz</MenuItem>
-        <MenuItem value="Masajes">Masajes</MenuItem>
-        <MenuItem value="Marta">Marta</MenuItem>
-        <MenuItem value="Merienda">Merienda</MenuItem>
-        <MenuItem value="Nafta">Nafta</MenuItem>
-        <MenuItem value="Otros">Otros</MenuItem>
-        <MenuItem value="Panadería">Panadería</MenuItem>
-        <MenuItem value="Peluquería">Peluquería</MenuItem>
-        <MenuItem value="Prepaga">Prepaga</MenuItem>
-        <MenuItem value="Propina">Propina</MenuItem>
-        <MenuItem value="Restaurante">Restaurante</MenuItem>
-        <MenuItem value="Salida">Salida</MenuItem>
-        <MenuItem value="Supermercado">Supermercado</MenuItem>
-        <MenuItem value="Verdulería">Verdulería</MenuItem>
+        {subcategories
+          .filter(sub => !filters.category || sub.category === filters.category)
+          .map(sub => (typeof sub === 'string' ? sub : sub.name))
+          .filter(Boolean)
+          .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
+          .map((subcat) => (
+            <MenuItem key={subcat} value={subcat}>{subcat}</MenuItem>
+          ))}
       </TextField>
 
       <TextField
