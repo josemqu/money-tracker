@@ -3,10 +3,12 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const Subcategory = require("./models/Subcategory");
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
 
 const PORT = process.env.PORT || 5002;
 
@@ -24,6 +26,26 @@ mongoose
     console.error("MongoDB connection error:", err);
     process.exit(1);
   });
+
+// Subcategory endpoints
+app.post("/subcategories", async (req, res) => {
+  try {
+    const subcategory = new Subcategory(req.body);
+    await subcategory.save();
+    res.status(201).json({ message: "Subcategory registered", subcategory });
+  } catch (err) {
+    res.status(500).json({ error: "Error registering subcategory", details: err });
+  }
+});
+
+app.get("/subcategories", async (req, res) => {
+  try {
+    const subcategories = await Subcategory.find();
+    res.json(subcategories);
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching subcategories", details: err });
+  }
+});
 
 // Expense model
 const expenseSchema = new mongoose.Schema({

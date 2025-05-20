@@ -1,4 +1,5 @@
 import React from "react";
+import { fetchSubcategories, addSubcategory } from "../services/subcategoryService";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -42,8 +43,13 @@ const ExpenseForm = ({
     paymentMethod: editingExpense?.paymentMethod || "",
     paidBy: editingExpense?.paidBy || "",
     amount: editingExpense?.amount || "",
-    date: editingExpense?.date ? parseLocalDate(editingExpense.date) : null
+    date: editingExpense?.date ? parseLocalDate(editingExpense.date) : null,
+    newSubcategory: ""
   });
+
+  const [subcategories, setSubcategories] = React.useState([]);
+  const [loadingSubcats, setLoadingSubcats] = React.useState(true);
+  const [addingSubcat, setAddingSubcat] = React.useState(false);
 
   React.useEffect(() => {
     setForm({
@@ -53,18 +59,58 @@ const ExpenseForm = ({
       paymentMethod: editingExpense?.paymentMethod || "",
       paidBy: editingExpense?.paidBy || "",
       amount: editingExpense?.amount || "",
-      date: editingExpense?.date ? parseLocalDate(editingExpense.date) : null
+      date: editingExpense?.date ? parseLocalDate(editingExpense.date) : null,
+      newSubcategory: ""
     });
   }, [editingExpense]);
+
+  React.useEffect(() => {
+    setLoadingSubcats(true);
+    fetchSubcategories().then((data) => {
+      setSubcategories(Array.isArray(data) ? data : []);
+      setLoadingSubcats(false);
+    });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleNewSubcatChange = (e) => {
+    setForm((prev) => ({ ...prev, newSubcategory: e.target.value }));
+  };
+
+  const handleAddSubcategory = async () => {
+    if (!form.newSubcategory.trim() || !form.category) return;
+    setAddingSubcat(true);
+    try {
+      const result = await addSubcategory({
+        name: form.newSubcategory.trim(),
+        category: form.category
+      });
+      if (result && result.subcategory) {
+        setSubcategories((prev) => [...prev, result.subcategory]);
+        setForm((prev) => ({ ...prev, subcategory: result.subcategory.name, newSubcategory: "" }));
+      } else if (result && result.name) {
+        setSubcategories((prev) => [...prev, result]);
+        setForm((prev) => ({ ...prev, subcategory: result.name, newSubcategory: "" }));
+      }
+    } finally {
+      setAddingSubcat(false);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(form);
+    if (form.newSubcategory.trim() && form.category) {
+      // Si hay subcategoría nueva, primero la agrega y luego envía el gasto
+      handleAddSubcategory().then(() => {
+        onSubmit({ ...form, subcategory: form.newSubcategory.trim(), newSubcategory: undefined });
+      });
+    } else {
+      onSubmit(form);
+    }
   };
 
   const handleDateChange = (newValue) => {
@@ -102,39 +148,38 @@ const ExpenseForm = ({
           onChange={handleChange}
           label="Subcategoría"
           size="small"
+          disabled={loadingSubcats || !form.category}
         >
           <MenuItem value="">Subcategoría</MenuItem>
-          <MenuItem value="Nafta">Nafta</MenuItem>
-          <MenuItem value="Brunch">Brunch</MenuItem>
-          <MenuItem value="Consulta">Consulta</MenuItem>
-          <MenuItem value="Supermercado">Supermercado</MenuItem>
-          <MenuItem value="Gas">Gas</MenuItem>
-          <MenuItem value="Verdulería">Verdulería</MenuItem>
-          <MenuItem value="Luz">Luz</MenuItem>
-          <MenuItem value="Farmacia">Farmacia</MenuItem>
-          <MenuItem value="Entretenimiento">Entretenimiento</MenuItem>
-          <MenuItem value="Limpieza">Limpieza</MenuItem>
-          <MenuItem value="Expensas">Expensas</MenuItem>
-          <MenuItem value="Cumpleaños">Cumpleaños</MenuItem>
-          <MenuItem value="Calzado">Calzado</MenuItem>
-          <MenuItem value="Café">Café</MenuItem>
-          <MenuItem value="Propina">Propina</MenuItem>
-          <MenuItem value="Marta">Marta</MenuItem>
-          <MenuItem value="Ferretería">Ferretería</MenuItem>
-          <MenuItem value="Prepaga">Prepaga</MenuItem>
-          <MenuItem value="Panadería">Panadería</MenuItem>
-          <MenuItem value="Bazar">Bazar</MenuItem>
-          <MenuItem value="Carniceria">Carniceria</MenuItem>
-          <MenuItem value="Heladeria">Heladeria</MenuItem>
-          <MenuItem value="Dietetica">Dietetica</MenuItem>
-          <MenuItem value="Merienda">Merienda</MenuItem>
-          <MenuItem value="Internet">Internet</MenuItem>
-          <MenuItem value="Cena">Cena</MenuItem>
-          <MenuItem value="Libreria">Libreria</MenuItem>
-          <MenuItem value="Peluquería">Peluquería</MenuItem>
-          <MenuItem value="Salida">Salida</MenuItem>
+          {subcategories
+            .filter((s) => s.category === form.category)
+            .map((s) => (
+              <MenuItem key={s._id || s.name} value={s.name}>
+                {s.name}
+              </MenuItem>
+            ))}
+          <MenuItem value="Nueva">Nueva</MenuItem>
         </Select>
       </FormControl>
+      {form.subcategory === "Nueva" && (
+        <Box display="flex" alignItems="center" gap={1} mt={1} mb={2}>
+          <TextField
+            label="Nueva subcategoría"
+            value={form.newSubcategory}
+            onChange={handleNewSubcatChange}
+            size="small"
+            disabled={!form.category || addingSubcat}
+          />
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={handleAddSubcategory}
+            disabled={!form.category || !form.newSubcategory.trim() || addingSubcat}
+          >
+            Agregar
+          </Button>
+        </Box>
+      )}
 
       <TextField
         name="place"
