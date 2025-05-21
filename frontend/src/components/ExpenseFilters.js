@@ -6,28 +6,30 @@ export default function ExpenseFilters({ filters, setFilters }) {
   const [categories, setCategories] = React.useState([]);
   const [subcategories, setSubcategories] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
-
+  // Importar los servicios
   React.useEffect(() => {
     setLoading(true);
     Promise.all([
-      fetch('/api/categories').then(res => res.json()),
-      fetch('/api/subcategories').then(res => res.json())
-    ]).then(([cats, subs]) => {
-      console.log('Categorías recibidas:', cats);
-      console.log('Subcategorías recibidas:', subs);
-      if (!Array.isArray(cats) || cats.length === 0) {
-        console.warn('No se recibieron categorías desde la API');
-      }
-      if (!Array.isArray(subs) || subs.length === 0) {
-        console.warn('No se recibieron subcategorías desde la API');
-      }
-      setCategories(Array.isArray(cats) ? cats : []);
-      setSubcategories(Array.isArray(subs) ? subs : []);
-      setLoading(false);
-    }).catch((err) => {
-      console.error('Error al cargar categorías o subcategorías:', err);
-      setLoading(false);
-    });
+      require('../services/categoriesServices').fetchCategories(),
+      require('../services/categoriesServices').fetchSubcategories(),
+    ])
+      .then(([cats, subs]) => {
+        console.log("Categorías recibidas:", cats);
+        console.log("Subcategorías recibidas:", subs);
+        if (!Array.isArray(cats) || cats.length === 0) {
+          console.warn("No se recibieron categorías desde la API");
+        }
+        if (!Array.isArray(subs) || subs.length === 0) {
+          console.warn("No se recibieron subcategorías desde la API");
+        }
+        setCategories(Array.isArray(cats) ? cats : []);
+        setSubcategories(Array.isArray(subs) ? subs : []);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error al cargar categorías o subcategorías:", err);
+        setLoading(false);
+      });
   }, []);
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -48,11 +50,13 @@ export default function ExpenseFilters({ filters, setFilters }) {
       >
         <MenuItem value="">Todas</MenuItem>
         {categories
-          .map(cat => (typeof cat === 'string' ? cat : cat.name))
+          .map((cat) => (typeof cat === "string" ? cat : cat.name))
           .filter(Boolean)
-          .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
+          .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
           .map((cat) => (
-            <MenuItem key={cat} value={cat}>{cat}</MenuItem>
+            <MenuItem key={cat} value={cat}>
+              {cat}
+            </MenuItem>
           ))}
       </TextField>
 
@@ -68,12 +72,16 @@ export default function ExpenseFilters({ filters, setFilters }) {
       >
         <MenuItem value="">Todas</MenuItem>
         {subcategories
-          .filter(sub => !filters.category || sub.category === filters.category)
-          .map(sub => (typeof sub === 'string' ? sub : sub.name))
+          .filter(
+            (sub) => !filters.category || sub.category === filters.category
+          )
+          .map((sub) => (typeof sub === "string" ? sub : sub.name))
           .filter(Boolean)
-          .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
+          .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
           .map((subcat) => (
-            <MenuItem key={subcat} value={subcat}>{subcat}</MenuItem>
+            <MenuItem key={subcat} value={subcat}>
+              {subcat}
+            </MenuItem>
           ))}
       </TextField>
 

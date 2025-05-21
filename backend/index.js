@@ -50,6 +50,18 @@ app.get("/api/subcategories", async (req, res) => {
   }
 });
 
+// Listar categorías
+app.get("/api/categories", async (req, res) => {
+  try {
+    const expenses = await Expense.find();
+    const categories = expenses.map((expense) => expense.category);
+    const uniqueCategories = Array.from(new Set(categories));
+    res.json(uniqueCategories);
+  } catch (err) {
+    res.status(500).json({ error: "Error fetching categories", details: err });
+  }
+});
+
 // Expense model
 const Expense = require("./models/Expense");
 
