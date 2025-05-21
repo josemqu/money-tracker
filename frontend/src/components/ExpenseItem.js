@@ -68,34 +68,36 @@ export default function ExpenseItem({
     <Card className={styles.expenseCard}>
       {/* Fecha y Monto */}
       <div className={styles.headerRow}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "top",
-            maxHeight: "1.2rem",
-            flex: 1,
-            gap: 10,
-          }}
-        >
-          <div className={styles.dateBox}>
-            <FaCalendarAlt color="#a0aec0" size={14} />
-            <Typography variant="body2" sx={{ color: "#e0e6f0" }}>
-              {formatDate(expense.date)}
-            </Typography>
-          </div>
-          {expense.place && (
-            <div className={styles.localBox}>
-              <FaMapMarkerAlt color="#10b981" size={14} />
-              <Typography
-                variant="body2"
-                sx={{ color: "#d1fae5", fontWeight: 500 }}
-              >
-                {expense.place}
-              </Typography>
-            </div>
-          )}
+        <div className={styles.dateBox}>
+          <FaCalendarAlt color="#a0aec0" size={14} />
+          <Typography variant="body2" sx={{ color: "#e0e6f0" }}>
+            {formatDate(expense.date)}
+          </Typography>
+        </div>
+        <div className={styles.localBox}>
+          <FaMapMarkerAlt
+            color="#10b981"
+            style={{
+              minWidth: 14,
+              minHeight: 14,
+              flexShrink: 0,
+            }}
+          />
+          <Typography
+            variant="body2"
+            sx={{
+              color: "#d1fae5",
+              fontWeight: 500,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {expense.place}
+          </Typography>
         </div>
         {/* Badge del monto */}
+        <div style={{ flex: 1 }} />
         <div className={styles.amountBadge}>
           <Typography
             variant="h6"
