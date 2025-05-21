@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "@mui/material/Card";
 import styles from "./ExpenseItem.module.css";
 import CardContent from "@mui/material/CardContent";
@@ -16,6 +16,12 @@ import {
   FaStore,
   FaMapMarkerAlt,
 } from "react-icons/fa";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogActions from "@mui/material/DialogActions";
+import Button from "@mui/material/Button";
 
 export default function ExpenseItem({
   expense,
@@ -23,6 +29,8 @@ export default function ExpenseItem({
   onDelete,
   categoryIcon,
 }) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   // Parsear fecha YYYY-MM-DD como local
   function parseLocalDate(dateString) {
     if (!dateString) return null;
@@ -62,7 +70,13 @@ export default function ExpenseItem({
       {/* Fecha y Monto */}
       <div className={styles.headerRow}>
         <div
-          style={{ display: "flex", alignItems: "center", flex: 1, gap: 10 }}
+          style={{
+            display: "flex",
+            alignItems: "top",
+            maxHeight: "1.2rem",
+            flex: 1,
+            gap: 10,
+          }}
         >
           <div className={styles.dateBox}>
             <FaCalendarAlt color="#a0aec0" size={14} />
@@ -71,7 +85,7 @@ export default function ExpenseItem({
             </Typography>
           </div>
           {expense.place && (
-            <div className={styles.localBox} style={{ marginLeft: 10 }}>
+            <div className={styles.localBox}>
               <FaMapMarkerAlt color="#10b981" size={14} />
               <Typography
                 variant="body2"
@@ -172,12 +186,45 @@ export default function ExpenseItem({
                 );
                 return;
               }
-              onDelete(expense._id);
+              setConfirmOpen(true);
             }}
             sx={{ color: "#b44" }}
           >
             <FaTrashAlt size={16} />
           </IconButton>
+
+          {/* Pop-up de confirmación para borrar */}
+          <Dialog
+            open={confirmOpen}
+            onClose={() => setConfirmOpen(false)}
+            aria-labelledby="confirm-dialog-title"
+          >
+            <DialogTitle id="confirm-dialog-title">
+              ¿Eliminar gasto?
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                ¿Estás seguro de que deseas eliminar este gasto? Esta acción no
+                se puede deshacer.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setConfirmOpen(false)} color="primary">
+                Cancelar
+              </Button>
+              <Button
+                onClick={() => {
+                  setConfirmOpen(false);
+                  onDelete(expense._id);
+                }}
+                color="error"
+                variant="contained"
+                autoFocus
+              >
+                Eliminar
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </CardActions>
     </Card>

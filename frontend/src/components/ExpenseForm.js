@@ -1,9 +1,13 @@
 import React from "react";
-import { fetchSubcategories, addSubcategory } from "../services/subcategoryService";
+import {
+  fetchSubcategories,
+  addSubcategory,
+} from "../services/subcategoryService";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TextField from "@mui/material/TextField";
+import { NumericFormat } from 'react-number-format';
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -14,39 +18,62 @@ import esLocale from "date-fns/locale/es";
 import styles from "./ExpenseForm.module.css";
 import PAYMENT_METHODS from "../constants/paymentMethods";
 import USERS from "../constants/users";
+import { fetchCategories } from "../services/categoriesServices";
 
 // Parsear fecha YYYY-MM-DD como local
 function parseLocalDate(dateString) {
   if (!dateString) return null;
-  const [year, month, day] = dateString.split('-');
+  const [year, month, day] = dateString.split("-");
   return new Date(Number(year), Number(month) - 1, Number(day));
 }
 
-const ExpenseForm = ({
-  onSubmit,
-  onCancel,
-  editingExpense,
-}) => {
-  const categories = [
-    "Transporte",
-    "Salida",
-    "Salud",
-    "Comida",
-    "Casa",
-    "Regalos",
-    "Indumentaria",
-    "Cuidado Personal",
-  ];
+const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
+  // Función auxiliar para verificar campos vacíos, nulos o sin seleccionar
+  function isEmpty(val) {
+    return (
+      val === undefined ||
+      val === null ||
+      (typeof val === "string" && val.trim() === "")
+    );
+  }
+  // Validación de campos obligatorios
+  function isFormValid() {
+    if (isEmpty(form.category)) return false;
+    if (
+      (isEmpty(form.subcategory) || form.subcategory === "Nueva") &&
+      isEmpty(form.newSubcategory)
+    )
+      return false;
+    if (isEmpty(form.paymentMethod)) return false;
+    if (isEmpty(form.paidBy)) return false;
+    if (
+      isEmpty(form.amount) ||
+      isNaN(Number(form.amount)) ||
+      Number(form.amount) <= 0
+    )
+      return false;
+    if (!form.date) return false;
+    return true;
+  }
+  // Estado para categorías dinámicas
+  const [categories, setCategories] = React.useState([]);
+
+  React.useEffect(() => {
+    fetchCategories().then((data) => {
+      setCategories(Array.isArray(data) ? data : []);
+    });
+  }, []);
 
   const [form, setForm] = React.useState({
     category: editingExpense?.category || "",
-    subcategory: editingExpense?.subcategory?._id || editingExpense?.subcategory || "",
+    subcategory:
+      editingExpense?.subcategory?._id || editingExpense?.subcategory || "",
     place: editingExpense?.place || "",
     paymentMethod: editingExpense?.paymentMethod || "",
     paidBy: editingExpense?.paidBy || "",
     amount: editingExpense?.amount || "",
     date: editingExpense?.date ? parseLocalDate(editingExpense.date) : null,
-    newSubcategory: ""
+    newSubcategory: "",
   });
 
   const [subcategories, setSubcategories] = React.useState([]);
@@ -56,13 +83,14 @@ const ExpenseForm = ({
   React.useEffect(() => {
     setForm({
       category: editingExpense?.category || "",
-      subcategory: editingExpense?.subcategory?._id || editingExpense?.subcategory || "",
+      subcategory:
+        editingExpense?.subcategory?._id || editingExpense?.subcategory || "",
       place: editingExpense?.place || "",
       paymentMethod: editingExpense?.paymentMethod || "",
       paidBy: editingExpense?.paidBy || "",
       amount: editingExpense?.amount || "",
       date: editingExpense?.date ? parseLocalDate(editingExpense.date) : null,
-      newSubcategory: ""
+      newSubcategory: "",
     });
   }, [editingExpense]);
 
@@ -89,14 +117,22 @@ const ExpenseForm = ({
     try {
       const result = await addSubcategory({
         name: form.newSubcategory.trim(),
-        category: form.category
+        category: form.category,
       });
       if (result && result.subcategory) {
         setSubcategories((prev) => [...prev, result.subcategory]);
-        setForm((prev) => ({ ...prev, subcategory: result.subcategory._id, newSubcategory: "" }));
+        setForm((prev) => ({
+          ...prev,
+          subcategory: result.subcategory._id,
+          newSubcategory: "",
+        }));
       } else if (result && result._id) {
         setSubcategories((prev) => [...prev, result]);
-        setForm((prev) => ({ ...prev, subcategory: result._id, newSubcategory: "" }));
+        setForm((prev) => ({
+          ...prev,
+          subcategory: result._id,
+          newSubcategory: "",
+        }));
       }
     } finally {
       setAddingSubcat(false);
@@ -105,16 +141,30 @@ const ExpenseForm = ({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // Si hay subcategoría nueva, primero la agrega y luego envía el gasto
     if (form.newSubcategory.trim() && form.category) {
-      // Si hay subcategoría nueva, primero la agrega y luego envía el gasto
       handleAddSubcategory().then(() => {
         // El _id ya queda en form.subcategory
         onSubmit({ ...form, newSubcategory: undefined });
       });
     } else {
-      onSubmit(form);
+      // Buscar el _id de la subcategoría por nombre
+      let subcategoryId = form.subcategory;
+      const foundSubcat = subcategories.find(
+        (s) => s.name === form.subcategory && s.category === form.category
+      );
+      if (foundSubcat) {
+        subcategoryId = foundSubcat._id;
+      }
+      const expenseToSend = {
+        ...form,
+        subcategory: subcategoryId,
+        newSubcategory: undefined, // no enviar este campo
+      };
+      onSubmit(expenseToSend);
     }
   };
+
 
   const handleDateChange = (newValue) => {
     setForm((prev) => ({ ...prev, date: newValue }));
@@ -156,9 +206,11 @@ const ExpenseForm = ({
           <MenuItem value="">Subcategoría</MenuItem>
           {subcategories
             .filter((s) => s.category === form.category)
-            .sort((a, b) => a.name.localeCompare(b.name, 'es', { sensitivity: 'base' }))
+            .sort((a, b) =>
+              a.name.localeCompare(b.name, "es", { sensitivity: "base" })
+            )
             .map((s) => (
-              <MenuItem key={s._id} value={s._id}>
+              <MenuItem key={s._id} value={s.name}>
                 {s.name}
               </MenuItem>
             ))}
@@ -178,7 +230,9 @@ const ExpenseForm = ({
             variant="outlined"
             size="small"
             onClick={handleAddSubcategory}
-            disabled={!form.category || !form.newSubcategory.trim() || addingSubcat}
+            disabled={
+              !form.category || !form.newSubcategory.trim() || addingSubcat
+            }
           >
             Agregar
           </Button>
@@ -207,44 +261,30 @@ const ExpenseForm = ({
           size="small"
         >
           <MenuItem value="">Medio de Pago</MenuItem>
-          {[...PAYMENT_METHODS.map(m => m.value), "Contado"]
-            .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
+          {[...PAYMENT_METHODS.map((m) => m.value), "Contado"]
+            .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
             .map((method) => (
-              <MenuItem key={method} value={method}>{method}</MenuItem>
+              <MenuItem key={method} value={method}>
+                {method}
+              </MenuItem>
             ))}
         </Select>
       </FormControl>
 
-      <FormControl fullWidth size="small">
-        <InputLabel id="paidBy-label">Pagado por</InputLabel>
-        <Select
-          labelId="paidBy-label"
-          name="paidBy"
-          required
-          value={form.paidBy}
-          onChange={handleChange}
-          label="Pagado por"
-          size="small"
-        >
-          <MenuItem value="">Pagado por</MenuItem>
-          {USERS.map(u => u.value)
-            .sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }))
-            .map((user) => (
-              <MenuItem key={user} value={user}>{user}</MenuItem>
-            ))}
-        </Select>
-      </FormControl>
-
-      <TextField
+      <NumericFormat
+        customInput={TextField}
         name="amount"
         label="Monto"
-        type="number"
-        inputProps={{ step: "0.01" }}
         value={form.amount}
-        onChange={handleChange}
-        required
+        onValueChange={(values) => {
+          setForm((prev) => ({ ...prev, amount: values.value }));
+        }}
+        thousandSeparator="."
+        decimalSeparator="," 
+        allowNegative={false}
         fullWidth
         size="small"
+        required
         InputProps={{ className: styles.inputDark }}
       />
 
@@ -270,7 +310,12 @@ const ExpenseForm = ({
         <Button variant="outlined" onClick={onCancel} size="small">
           Cancelar
         </Button>
-        <Button type="submit" variant="contained" size="small">
+        <Button
+          type="submit"
+          variant="contained"
+          size="small"
+          disabled={!isFormValid()}
+        >
           {editingExpense ? "Actualizar" : "Agregar"}
         </Button>
       </Box>

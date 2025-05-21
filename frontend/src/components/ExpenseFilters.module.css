@@ -1,0 +1,19 @@
+.filtersContainer {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
+.filterField {
+  flex: 1;
+}
+
+.selectorField {
+  max-width: 180px;
+  min-width: 140px;
+}
+
+.clearButton {
+  margin-left: 8px;
+}

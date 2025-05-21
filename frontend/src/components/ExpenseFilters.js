@@ -1,5 +1,15 @@
 import React from "react";
-import { TextField, MenuItem, Box, IconButton, Tooltip } from "@mui/material";
+import {
+  TextField,
+  MenuItem,
+  Box,
+  IconButton,
+  Tooltip,
+  FormControl,
+  InputLabel,
+  Select,
+} from "@mui/material";
+import styles from "./ExpenseFilters.module.css";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 
 export default function ExpenseFilters({ filters, setFilters }) {
@@ -10,12 +20,10 @@ export default function ExpenseFilters({ filters, setFilters }) {
   React.useEffect(() => {
     setLoading(true);
     Promise.all([
-      require('../services/categoriesServices').fetchCategories(),
-      require('../services/categoriesServices').fetchSubcategories(),
+      require("../services/categoriesServices").fetchCategories(),
+      require("../services/categoriesServices").fetchSubcategories(),
     ])
       .then(([cats, subs]) => {
-        console.log("Categorías recibidas:", cats);
-        console.log("Subcategorías recibidas:", subs);
         if (!Array.isArray(cats) || cats.length === 0) {
           console.warn("No se recibieron categorías desde la API");
         }
@@ -37,54 +45,78 @@ export default function ExpenseFilters({ filters, setFilters }) {
   };
 
   return (
-    <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center" }}>
-      <TextField
-        select
-        label="Categoría"
-        name="category"
-        value={filters.category || ""}
-        onChange={handleFilterChange}
-        variant="outlined"
-        size="small"
-        sx={{ minWidth: 140 }}
-      >
-        <MenuItem value="">Todas</MenuItem>
-        {categories
-          .map((cat) => (typeof cat === "string" ? cat : cat.name))
-          .filter(Boolean)
-          .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
-          .map((cat) => (
-            <MenuItem key={cat} value={cat}>
-              {cat}
-            </MenuItem>
-          ))}
-      </TextField>
-
-      <TextField
-        select
-        label="Subcategoría"
-        name="subcategory"
-        value={filters.subcategory || ""}
-        onChange={handleFilterChange}
-        variant="outlined"
-        size="small"
-        sx={{ minWidth: 140 }}
-      >
-        <MenuItem value="">Todas</MenuItem>
-        {subcategories
-          .filter(
-            (sub) => !filters.category || sub.category === filters.category
-          )
-          .map((sub) => (typeof sub === "string" ? sub : sub.name))
-          .filter(Boolean)
-          .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
-          .map((subcat) => (
-            <MenuItem key={subcat} value={subcat}>
-              {subcat}
-            </MenuItem>
-          ))}
-      </TextField>
-
+    <Box className={styles.filtersContainer}>
+      <FormControl fullWidth size="small" className={styles.filterField}>
+        <InputLabel id="category-filter-label">Categoría</InputLabel>
+        <Select
+          labelId="category-filter-label"
+          id="category-filter"
+          name="category"
+          value={filters.category || ""}
+          label="Categoría"
+          onChange={handleFilterChange}
+          className={styles.filterField}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxWidth: 160,
+              },
+            },
+          }}
+        >
+          <MenuItem value="">Todas</MenuItem>
+          {categories
+            .map((cat) => (typeof cat === "string" ? cat : cat.name))
+            .filter(Boolean)
+            .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
+            .map((cat) => (
+              <MenuItem key={cat} value={cat}>
+                {cat}
+              </MenuItem>
+            ))}
+        </Select>
+      </FormControl>
+      <FormControl fullWidth size="small" className={styles.filterField}>
+        <InputLabel id="subcategory-filter-label">Subcategoría</InputLabel>
+        <Select
+          labelId="subcategory-filter-label"
+          id="subcategory-filter"
+          name="subcategory"
+          value={filters.subcategory || ""}
+          label="Subcategoría"
+          onChange={handleFilterChange}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxWidth: 160,
+              },
+            },
+          }}
+        >
+          <MenuItem value="">Todas</MenuItem>
+          {(() => {
+            const filteredSubs = subcategories
+              .filter(
+                (s) => !filters.category || s.category === filters.category
+              )
+              .map((sub) => (typeof sub === "string" ? { name: sub } : sub))
+              .filter((s) => s.name);
+            const uniqueSubs = filteredSubs.filter(
+              (sub, idx, arr) =>
+                arr.findIndex((s) => s.name === sub.name) === idx
+            );
+            return uniqueSubs
+              .sort((a, b) =>
+                a.name.localeCompare(b.name, "es", { sensitivity: "base" })
+              )
+              .map((s) => (
+                <MenuItem key={s.name} value={s.name}>
+                  {s.name}
+                </MenuItem>
+              ));
+          })()}
+        </Select>
+      </FormControl>
       <TextField
         label="Lugar"
         name="place"
@@ -92,7 +124,7 @@ export default function ExpenseFilters({ filters, setFilters }) {
         onChange={handleFilterChange}
         variant="outlined"
         size="small"
-        sx={{ minWidth: 120 }}
+        className={styles.filterField}
       />
       <Tooltip title="Limpiar filtros">
         <IconButton

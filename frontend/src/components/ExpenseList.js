@@ -39,20 +39,15 @@ const ExpenseList = ({ expenses, onEdit, onDelete }) => {
   };
 
   return (
-    <ul
-      style={{
-        listStyle: "none",
-        padding: 0,
-        width: "100%",
-        maxWidth: 500,
-        margin: "32px auto 0 auto",
-      }}
-    >
+    <ul className="expense-list">
       {[...expenses]
-        .filter(expense => expense && expense.category)
-        .map(expense => ({
+        .filter((expense) => expense && expense.category)
+        .map((expense) => ({
           ...expense,
-          subcategory: typeof expense.subcategory === "object" ? expense.subcategory.name : expense.subcategory
+          subcategory:
+            typeof expense.subcategory === "object"
+              ? expense.subcategory.name
+              : expense.subcategory,
         }))
         .sort((a, b) => {
           const da = a.date ? new Date(a.date) : new Date(0);

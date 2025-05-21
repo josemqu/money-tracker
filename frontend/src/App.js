@@ -17,9 +17,6 @@ import {
   Tabs,
   Tab,
   Box,
-  IconButton,
-  Tooltip,
-  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -147,8 +144,6 @@ function App() {
             <section
               className="App"
               style={{
-                width: "100%",
-                maxWidth: 500,
                 margin: "32px auto 0 auto",
               }}
             >
