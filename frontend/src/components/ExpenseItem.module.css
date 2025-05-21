@@ -62,6 +62,7 @@
   gap: 6px;
   font-size: 1.05em;
   padding: 0 8px;
+  margin-top: 8px !important;
 }
 
 .localBox {
