@@ -1,8 +1,5 @@
 import React from "react";
 import "./App.css";
-import CATEGORY_COLORS from "./constants/categoryColors";
-import PAYMENT_METHODS from "./constants/paymentMethods";
-import USERS from "./constants/users";
 import {
   ExpensesProvider,
   useExpensesContext,

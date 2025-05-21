@@ -7,18 +7,18 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TextField from "@mui/material/TextField";
-import { NumericFormat } from 'react-number-format';
+import { NumericFormat } from "react-number-format";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import Box from "@mui/material/Box";
 import esLocale from "date-fns/locale/es";
 import styles from "./ExpenseForm.module.css";
 import PAYMENT_METHODS from "../constants/paymentMethods";
 import USERS from "../constants/users";
 import { fetchCategories } from "../services/categoriesServices";
+import Box from "@mui/material/Box";
 
 // Parsear fecha YYYY-MM-DD como local
 function parseLocalDate(dateString) {
@@ -38,22 +38,26 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
   }
   // Validación de campos obligatorios
   function isFormValid() {
-    if (isEmpty(form.category)) return false;
-    if (
-      (isEmpty(form.subcategory) || form.subcategory === "Nueva") &&
-      isEmpty(form.newSubcategory)
-    )
-      return false;
-    if (isEmpty(form.paymentMethod)) return false;
-    if (isEmpty(form.paidBy)) return false;
-    if (
-      isEmpty(form.amount) ||
-      isNaN(Number(form.amount)) ||
-      Number(form.amount) <= 0
-    )
-      return false;
-    if (!form.date) return false;
-    return true;
+    const hasCategory = !isEmpty(form.category);
+    const hasSubcategory =
+      (!isEmpty(form.subcategory) && form.subcategory !== "Nueva") ||
+      (!isEmpty(form.newSubcategory) && form.subcategory === "Nueva");
+    const hasPaymentMethod = !isEmpty(form.paymentMethod);
+    const hasPaidBy = !isEmpty(form.paidBy);
+    const amountValid =
+      !isEmpty(form.amount) &&
+      !isNaN(Number(form.amount)) &&
+      Number(form.amount) > 0;
+    const hasDate = !!form.date;
+
+    return [
+      hasCategory,
+      hasSubcategory,
+      hasPaymentMethod,
+      hasPaidBy,
+      amountValid,
+      hasDate,
+    ].every(Boolean);
   }
   // Estado para categorías dinámicas
   const [categories, setCategories] = React.useState([]);
@@ -165,7 +169,6 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
     }
   };
 
-
   const handleDateChange = (newValue) => {
     setForm((prev) => ({ ...prev, date: newValue }));
   };
@@ -182,6 +185,13 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
           onChange={handleChange}
           label="Categoría"
           size="small"
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxWidth: 160,
+              },
+            },
+          }}
         >
           {categories.map((cat) => (
             <MenuItem key={cat} value={cat}>
@@ -190,7 +200,6 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
           ))}
         </Select>
       </FormControl>
-
       <FormControl fullWidth size="small">
         <InputLabel id="subcategory-label">Subcategoría</InputLabel>
         <Select
@@ -202,6 +211,13 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
           label="Subcategoría"
           size="small"
           disabled={loadingSubcats || !form.category}
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxWidth: 160,
+              },
+            },
+          }}
         >
           <MenuItem value="">Subcategoría</MenuItem>
           {subcategories
@@ -238,7 +254,6 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
           </Button>
         </Box>
       )}
-
       <TextField
         name="place"
         label="Lugar"
@@ -248,7 +263,6 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
         size="small"
         InputProps={{ className: styles.inputDark }}
       />
-
       <FormControl fullWidth size="small">
         <InputLabel id="paymentMethod-label">Medio de Pago</InputLabel>
         <Select
@@ -259,9 +273,16 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
           onChange={handleChange}
           label="Medio de Pago"
           size="small"
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxWidth: 160,
+              },
+            },
+          }}
         >
           <MenuItem value="">Medio de Pago</MenuItem>
-          {[...PAYMENT_METHODS.map((m) => m.value), "Contado"]
+          {[...PAYMENT_METHODS.map((m) => m.value)]
             .sort((a, b) => a.localeCompare(b, "es", { sensitivity: "base" }))
             .map((method) => (
               <MenuItem key={method} value={method}>
@@ -270,7 +291,32 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
             ))}
         </Select>
       </FormControl>
-
+      <FormControl fullWidth size="small">
+        <InputLabel id="paidBy-label">Pagado por</InputLabel>
+        <Select
+          labelId="paidBy-label"
+          name="paidBy"
+          required
+          value={form.paidBy}
+          onChange={handleChange}
+          label="Pagado por"
+          size="small"
+          MenuProps={{
+            PaperProps: {
+              style: {
+                maxWidth: 160,
+              },
+            },
+          }}
+        >
+          <MenuItem value="">Pagado por</MenuItem>
+          {USERS.map((user) => (
+            <MenuItem key={user.value} value={user.value}>
+              {user.label}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
       <NumericFormat
         customInput={TextField}
         name="amount"
@@ -280,14 +326,12 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
           setForm((prev) => ({ ...prev, amount: values.value }));
         }}
         thousandSeparator="."
-        decimalSeparator="," 
+        decimalSeparator=","
         allowNegative={false}
         fullWidth
         size="small"
         required
-        InputProps={{ className: styles.inputDark }}
       />
-
       <LocalizationProvider
         dateAdapter={AdapterDateFns}
         adapterLocale={esLocale}
@@ -305,7 +349,6 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
           }}
         />
       </LocalizationProvider>
-
       <Box className={styles.buttonRow}>
         <Button variant="outlined" onClick={onCancel} size="small">
           Cancelar

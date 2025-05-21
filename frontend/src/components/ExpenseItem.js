@@ -6,7 +6,6 @@ import CardActions from "@mui/material/CardActions";
 import IconButton from "@mui/material/IconButton";
 import Chip from "@mui/material/Chip";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import PAYMENT_METHODS from "../constants/paymentMethods";
 import USERS from "../constants/users";
 import {
