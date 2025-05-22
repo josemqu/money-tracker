@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Card from "@mui/material/Card";
 import styles from "./ExpenseItem.module.css";
 import CardContent from "@mui/material/CardContent";
@@ -30,6 +30,20 @@ export default function ExpenseItem({
   categoryIcon,
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
+  const tooltipRef = useRef(null);
+
+  const handleTooltipOpen = () => {
+    setTooltipOpen(true);
+    // Cerrar después de 2 segundos
+    setTimeout(() => {
+      setTooltipOpen(false);
+    }, 2000);
+  };
+
+  const handleTooltipClose = () => {
+    setTooltipOpen(false);
+  };
 
   // Parsear fecha YYYY-MM-DD como local
   function parseLocalDate(dateString) {
@@ -75,8 +89,26 @@ export default function ExpenseItem({
             {formatDate(expense.date)}
           </Typography>
         </div>
-        <Tooltip title={expense.place} placement="top" arrow>
-          <div className={styles.localBox}>
+        <Tooltip 
+          title={expense.place} 
+          placement="top" 
+          arrow
+          open={tooltipOpen}
+          onClose={handleTooltipClose}
+          disableFocusListener
+          disableHoverListener
+          disableTouchListener
+          PopperProps={{
+            disablePortal: true,
+            style: { zIndex: 1500 }
+          }}
+        >
+          <div 
+            className={styles.localBox}
+            onClick={handleTooltipOpen}
+            ref={tooltipRef}
+            style={{ cursor: 'pointer' }}
+          >
             <FaMapMarkerAlt
               color="#10b981"
               style={{
