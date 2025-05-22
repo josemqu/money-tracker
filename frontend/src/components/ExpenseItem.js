@@ -16,6 +16,7 @@ import {
   FaMapMarkerAlt,
 } from "react-icons/fa";
 import Dialog from "@mui/material/Dialog";
+import Tooltip from "@mui/material/Tooltip";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
@@ -74,28 +75,30 @@ export default function ExpenseItem({
             {formatDate(expense.date)}
           </Typography>
         </div>
-        <div className={styles.localBox}>
-          <FaMapMarkerAlt
-            color="#10b981"
-            style={{
-              minWidth: 14,
-              minHeight: 14,
-              flexShrink: 0,
-            }}
-          />
-          <Typography
-            variant="body2"
-            sx={{
-              color: "#d1fae5",
-              fontWeight: 500,
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {expense.place}
-          </Typography>
-        </div>
+        <Tooltip title={expense.place} placement="top" arrow>
+          <div className={styles.localBox}>
+            <FaMapMarkerAlt
+              color="#10b981"
+              style={{
+                minWidth: 14,
+                minHeight: 14,
+                flexShrink: 0,
+              }}
+            />
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#d1fae5",
+                fontWeight: 500,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {expense.place}
+            </Typography>
+          </div>
+        </Tooltip>
         {/* Badge del monto */}
         <div style={{ flex: 1 }} />
         <div className={styles.amountBadge}>

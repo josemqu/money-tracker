@@ -54,6 +54,10 @@
   width: auto;
   flex-shrink: 0;
   font-size: 1em;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .categoryRow {
@@ -77,6 +81,10 @@
   max-width: 100%;
   min-width: 0;
   font-size: 0.97em;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .actionsRow {
@@ -91,6 +99,10 @@
 .chipsRow {
   display: flex;
   gap: 5px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .actionButtons {
