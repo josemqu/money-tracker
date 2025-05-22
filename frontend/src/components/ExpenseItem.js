@@ -89,25 +89,21 @@ export default function ExpenseItem({
             {formatDate(expense.date)}
           </Typography>
         </div>
-        <Tooltip 
-          title={expense.place} 
-          placement="top" 
+        <Tooltip
+          title={expense.place}
+          placement="top"
           arrow
           open={tooltipOpen}
           onClose={handleTooltipClose}
           disableFocusListener
           disableHoverListener
           disableTouchListener
-          PopperProps={{
-            disablePortal: true,
-            style: { zIndex: 1500 }
-          }}
         >
-          <div 
+          <div
             className={styles.localBox}
             onClick={handleTooltipOpen}
             ref={tooltipRef}
-            style={{ cursor: 'pointer' }}
+            style={{ cursor: "pointer" }}
           >
             <FaMapMarkerAlt
               color="#10b981"
