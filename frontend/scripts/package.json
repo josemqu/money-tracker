@@ -1,0 +1,13 @@
+{
+  "name": "money-tracker-favicon",
+  "version": "1.0.0",
+  "description": "Script to generate favicon and app icons for Money Tracker",
+  "main": "generate-favicon.js",
+  "scripts": {
+    "generate": "node generate-favicon.js"
+  },
+  "dependencies": {
+    "sharp": "^0.32.0"
+  },
+  "private": true
+}
