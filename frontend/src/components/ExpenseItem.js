@@ -171,8 +171,9 @@ export default function ExpenseItem({
                   sx={{
                     backgroundColor: pm.bg,
                     color: pm.color,
-                    fontWeight: 500,
+                    fontWeight: 700,
                     fontSize: "0.75rem",
+                    textShadow: "0 0 1px rgba(0, 0, 0, 0.2)",
                   }}
                 />
               );
@@ -190,8 +191,9 @@ export default function ExpenseItem({
                   sx={{
                     backgroundColor: user.bg,
                     color: user.color,
-                    fontWeight: 500,
+                    fontWeight: 700,
                     fontSize: "0.75rem",
+                    textShadow: "0 0 1px rgba(0, 0, 0, 0.2)",
                   }}
                 />
               );
