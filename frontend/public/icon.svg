@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+  <path fill="#1f4e69" d="M100 100V10a90 90 0 0 1 90 90Z"/>
+  <path fill="#4cb7b4" d="M100 100h90a90 90 0 0 1-45 80Z"/>
+  <path fill="#f7962b" d="m100 100 45 80a90 90 0 0 1-45 10Z"/>
+  <circle cx="100" cy="100" r="90" fill="none" stroke="#000" stroke-width="4"/>
+  <text x="100" y="135" fill="#000" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="120" text-anchor="middle">$</text>
+</svg>

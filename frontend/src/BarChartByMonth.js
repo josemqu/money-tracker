@@ -122,7 +122,7 @@ export default function BarChartByMonth({ expenses }) {
             `hsl(${(index * 137.5) % 360}, 70%, 60%)`,
           borderRadius: [2, 2, 0, 0],
         },
-        barMaxWidth: 40,
+        // barMaxWidth: 40,
         label: { show: false }, // Ocultamos las etiquetas individuales
       })),
       // Serie invisible para mostrar los totales
