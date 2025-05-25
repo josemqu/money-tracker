@@ -4,7 +4,6 @@ import {
   ExpensesProvider,
   useExpensesContext,
 } from "./context/ExpensesContext";
-import Chip from "@mui/material/Chip";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ChartsSection from "./ChartsSection";
 import ExpenseList from "./components/ExpenseList";

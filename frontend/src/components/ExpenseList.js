@@ -11,6 +11,7 @@ import {
   FaUserFriends,
   FaRegStar,
   FaQuestionCircle,
+  FaTools,
 } from "react-icons/fa";
 
 const ExpenseList = ({ expenses, onEdit, onDelete }) => {
@@ -33,6 +34,8 @@ const ExpenseList = ({ expenses, onEdit, onDelete }) => {
         return <FaUserFriends color={color} size={20} />;
       case "Salida":
         return <FaRegStar color={color} size={20} />;
+      case "Servicios":
+        return <FaTools color={color} size={20} />;
       default:
         return <FaQuestionCircle color={color} size={20} />;
     }
