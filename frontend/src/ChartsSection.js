@@ -177,14 +177,12 @@ export default function ChartsSection({ expenses = [] }) {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "top",
+          flexWrap: "wrap",
           gap: 2,
           mt: 2,
         }}
       >
-        <FormControl
-          sx={{ minWidth: 200, maxWidth: 300, width: "100%" }}
-          size="small"
-        >
+        <FormControl sx={{ width: "100%" }} size="small">
           <InputLabel sx={{ color: "#fff" }} shrink>
             Categoría
           </InputLabel>
@@ -304,80 +302,70 @@ export default function ChartsSection({ expenses = [] }) {
           </Select>
         </FormControl>
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexDirection: "column",
-            alignItems: "top",
-            gap: 2,
-          }}
-        >
-          <FormControl sx={{ minWidth: 120, maxWidth: 200 }} size="small">
-            <InputLabel sx={{ color: "#fff" }}>Año</InputLabel>
-            <Select
-              value={year || ""}
-              onChange={handleYearChange}
-              label="Año"
-              sx={{
-                color: "#fff",
-                borderColor: "#fff",
-                "& .MuiSelect-select": {
-                  minWidth: "100px",
+        <FormControl sx={{ maxWidth: 200 }} size="small">
+          <InputLabel sx={{ color: "#fff" }}>Año</InputLabel>
+          <Select
+            value={year || ""}
+            onChange={handleYearChange}
+            label="Año"
+            sx={{
+              color: "#fff",
+              borderColor: "#fff",
+              "& .MuiSelect-select": {
+                minWidth: "100px",
+              },
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  maxHeight: 300,
+                  width: 200,
+                  bgcolor: "#2d2d2d",
                 },
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    maxHeight: 300,
-                    width: 200,
-                    bgcolor: "#2d2d2d",
-                  },
-                },
-              }}
-              disabled={isLoading}
-            >
-              {availableYears.map((y) => (
-                <MenuItem value={y} key={y}>
-                  {y}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+              },
+            }}
+            disabled={isLoading}
+          >
+            {availableYears.map((y) => (
+              <MenuItem value={y} key={y}>
+                {y}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-          <FormControl sx={{ minWidth: 120, maxWidth: 200 }} size="small">
-            <InputLabel sx={{ color: "#fff" }}>Mes</InputLabel>
-            <Select
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(Number(e.target.value))}
-              label="Mes"
-              sx={{
-                color: "#fff",
-                borderColor: "#fff",
-                "& .MuiSelect-select": {
-                  minWidth: "100px",
+        <FormControl sx={{ maxWidth: 200 }} size="small">
+          <InputLabel sx={{ color: "#fff" }}>Mes</InputLabel>
+          <Select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(Number(e.target.value))}
+            label="Mes"
+            sx={{
+              color: "#fff",
+              borderColor: "#fff",
+              "& .MuiSelect-select": {
+                minWidth: "100px",
+              },
+            }}
+            MenuProps={{
+              PaperProps: {
+                sx: {
+                  maxHeight: 300,
+                  width: 200,
+                  bgcolor: "#2d2d2d",
                 },
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    maxHeight: 300,
-                    width: 200,
-                    bgcolor: "#2d2d2d",
-                  },
-                },
-              }}
-              disabled={isLoading}
-            >
-              <MenuItem value={-1}>Todos</MenuItem>
-              {monthNumbers.map((m, idx) => (
-                <MenuItem value={m} key={m}>
-                  {months[idx]}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
+              },
+            }}
+            disabled={isLoading}
+          >
+            <MenuItem value={-1}>Todos</MenuItem>
+            {monthNumbers.map((m, idx) => (
+              <MenuItem value={m} key={m}>
+                {months[idx]}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <Tooltip title="Limpiar todos los filtros">
           <IconButton
