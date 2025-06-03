@@ -20,9 +20,14 @@ export default function PieChartByCategory({ expenses, selectedMonth }) {
   // Filtrar gastos por mes
   const filteredExpenses = useMemo(() => {
     if (selectedMonth === -1) return expenses;
-    return expenses.filter(
-      (e) => new Date(e.date).getMonth() === selectedMonth
-    );
+    
+    return expenses.filter(expense => {
+      // Parsear la fecha manualmente para evitar problemas de zona horaria
+      const [year, month] = expense.date.split('-').map(Number);
+      // Los meses en JavaScript van de 0 (enero) a 11 (diciembre)
+      // Por eso restamos 1 al mes de la fecha
+      return (month - 1) === selectedMonth;
+    });
   }, [expenses, selectedMonth]);
 
   const data = getCategoryData(filteredExpenses);

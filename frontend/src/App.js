@@ -16,6 +16,8 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  CircularProgress,
+  Backdrop,
 } from "@mui/material";
 import {
   FaPlus,
@@ -39,7 +41,7 @@ function App() {
   const [filters, setFilters] = React.useState({ category: "", place: "" });
   const [editingExpense, setEditingExpense] = React.useState(null); // null = alta, objeto = edición
   const [mainTab, setMainTab] = React.useState(0);
-  const { expenses, add, update, remove, clearAll, setExpenses } =
+  const { expenses, add, update, remove, clearAll, setExpenses, loading } =
     useExpensesContext();
 
   const darkTheme = createTheme({
@@ -117,6 +119,12 @@ function App() {
 
   return (
     <ThemeProvider theme={darkTheme}>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Box
         sx={{
           bgcolor: "#181c24",

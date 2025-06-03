@@ -3,37 +3,80 @@ import ReactECharts from "echarts-for-react";
 import CATEGORY_COLORS from "./categoryColors";
 
 function getBarChartData(expenses) {
-  // Agrupa por mes y categoría
-  const monthsSet = new Set(expenses.map((e) => new Date(e.date).getMonth()));
-  const months = Array.from(monthsSet).sort((a, b) => a - b);
-  const monthNames = months.map((m) =>
-    new Date(2000, m).toLocaleString("es", { month: "short" })
+  if (!expenses || expenses.length === 0) {
+    return { months: [], categories: [], data: [], totalsByMonth: [] };
+  }
+
+  // Primero, obtener todas las categorías únicas de todos los gastos
+  const allCategories = new Set(expenses.map((e) => e.category));
+  const categories = Array.from(allCategories);
+
+  // Crear un mapa de año-mes para agrupar correctamente
+  const yearMonthMap = new Map();
+
+  // Primera pasada: inicializar todos los meses con todas las categorías
+  expenses.forEach((expense) => {
+    const [year, month] = expense.date.split("-").map(Number);
+    const yearMonthKey = `${year}-${String(month).padStart(2, "0")}`;
+
+    if (!yearMonthMap.has(yearMonthKey)) {
+      const monthName = new Date(year, month - 1, 1).toLocaleString("es", {
+        month: "short",
+      });
+
+      // Inicializar el mes con todas las categorías en 0
+      const categoriesMap = new Map();
+      categories.forEach((cat) => categoriesMap.set(cat, 0));
+
+      yearMonthMap.set(yearMonthKey, {
+        year,
+        month: month - 1,
+        monthName,
+        categories: categoriesMap,
+      });
+    }
+  });
+
+  // Segunda pasada: sumar los montos a las categorías correspondientes
+  expenses.forEach((expense) => {
+    const [year, month] = expense.date.split("-").map(Number);
+    const yearMonthKey = `${year}-${String(month).padStart(2, "0")}`;
+
+    const monthData = yearMonthMap.get(yearMonthKey);
+    if (monthData) {
+      const currentAmount = monthData.categories.get(expense.category) || 0;
+      monthData.categories.set(
+        expense.category,
+        currentAmount + expense.amount
+      );
+    }
+  });
+
+  // Ordenar los meses cronológicamente
+  const sortedMonths = Array.from(yearMonthMap.entries()).sort(
+    ([keyA], [keyB]) => keyA.localeCompare(keyB)
   );
 
-  const dataByCategory = expenses.reduce((acc, expense) => {
-    const month = new Date(expense.date).getMonth();
-    const category = expense.category;
-    if (!acc.has(category)) {
-      acc.set(category, new Map());
-    }
-    const categoryData = acc.get(category);
-    if (!categoryData.has(month)) {
-      categoryData.set(month, 0);
-    }
-    categoryData.set(month, categoryData.get(month) + expense.amount);
-    return acc;
-  }, new Map());
+  // Crear las etiquetas de los meses con año
+  const monthNames = sortedMonths.map(
+    ([_, monthData]) =>
+      `${monthData.monthName} '${String(monthData.year).slice(2)}`
+  );
 
-  const categories = Array.from(dataByCategory.keys());
+  // Crear la matriz de datos para cada categoría
   const data = categories.map((category) => {
-    const categoryData = dataByCategory.get(category);
-    return months.map((month) => categoryData.get(month) || 0);
+    return sortedMonths.map(([_, monthData]) => {
+      return monthData.categories.get(category) || 0;
+    });
   });
 
   // Calcular totales por mes
-  const totalsByMonth = months.map((_, monthIndex) =>
-    data.reduce((sum, categoryData) => sum + (categoryData[monthIndex] || 0), 0)
-  );
+  const totalsByMonth = sortedMonths.map(([_, monthData]) => {
+    return Array.from(monthData.categories.values()).reduce(
+      (sum, amount) => sum + amount,
+      0
+    );
+  });
 
   return {
     months: monthNames,
@@ -51,7 +94,17 @@ export default function BarChartByMonth({ expenses }) {
 
   const option = {
     backgroundColor: "#181c24",
-    tooltip: {}, // tooltip simple por defecto
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
+      valueFormatter: (value) =>
+        new Intl.NumberFormat("es-AR", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }).format(value),
+    },
     legend: {
       data: categories,
       orient: "horizontal",
@@ -85,11 +138,12 @@ export default function BarChartByMonth({ expenses }) {
       type: "value",
       axisLabel: {
         color: "#eee",
-        formatter: (value) =>
-          new Intl.NumberFormat("es-AR", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          }).format(value / 1000) + " k",
+        formatter: (value) => {
+          const formattedValue = new Intl.NumberFormat("es-AR", {
+            useGrouping: true,
+          }).format(value);
+          return `${formattedValue}`;
+        },
       },
       axisLine: { show: false },
       axisTick: { show: false },
@@ -136,10 +190,14 @@ export default function BarChartByMonth({ expenses }) {
             show: total > 0,
             position: "top",
             distance: 5,
-            formatter: `$ ${total.toLocaleString("es-AR", {
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            })}`,
+            formatter: (params) => {
+              const formattedValue = new Intl.NumberFormat("es-AR", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+                useGrouping: true,
+              }).format(params.value);
+              return `$ ${formattedValue}`;
+            },
             rich: {
               a: {
                 color: "#fff",

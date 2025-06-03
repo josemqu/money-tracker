@@ -99,13 +99,19 @@ export default function ChartsSection({ expenses = [] }) {
     }
   }, [availableYears]);
 
+  // Función para parsear fechas de manera segura (formato YYYY-MM-DD)
+  const parseDate = (dateStr) => {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return { year, month, day };
+  };
+
   // Filtros aplicados a los gastos
   const filteredExpenses = useMemo(() => {
     if (!year) return [];
 
     return expenses.filter((exp) => {
-      const expDate = new Date(exp.date);
-      const matchYear = expDate.getFullYear() === year;
+      const { year: expYear } = parseDate(exp.date);
+      const matchYear = expYear === year;
       const matchCategory =
         selectedCategories.length > 0
           ? selectedCategories.includes(exp.category)
@@ -116,14 +122,19 @@ export default function ChartsSection({ expenses = [] }) {
 
   // Meses presentes en los gastos filtrados
   const { monthNumbers, months } = useMemo(() => {
-    const uniqueMonths = Array.from(
-      new Set(filteredExpenses.map((e) => new Date(e.date).getMonth()))
-    ).sort((a, b) => a - b);
+    const monthSet = new Set();
+    
+    filteredExpenses.forEach(exp => {
+      const { month } = parseDate(exp.date);
+      monthSet.add(month - 1); // Convertir a 0-11 para consistencia
+    });
+    
+    const uniqueMonths = Array.from(monthSet).sort((a, b) => a - b);
 
     return {
       monthNumbers: uniqueMonths,
-      months: uniqueMonths.map((m) =>
-        new Date(2000, m).toLocaleString("es", { month: "short" })
+      months: uniqueMonths.map(m => 
+        new Date(2000, m).toLocaleString('es', { month: 'short' })
       ),
     };
   }, [filteredExpenses]);
@@ -143,11 +154,15 @@ export default function ChartsSection({ expenses = [] }) {
       );
     }
 
+
     const barChartExpenses =
       selectedMonth === -1
         ? filteredExpenses
         : filteredExpenses
-            .filter((e) => new Date(e.date).getMonth() === selectedMonth)
+            .filter(exp => {
+              const { month } = parseDate(exp.date);
+              return (month - 1) === selectedMonth; // Convertir a 0-11 para comparar
+            })
             .map((e) => ({
               ...e,
               subcategory:
