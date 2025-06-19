@@ -1,0 +1,104 @@
+.expense-list {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.expense-day-group {
+  margin-bottom: 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.expense-day-header {
+  background-color: #f5f5f5;
+  color: #555;
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  border-bottom: 1px solid #e0e0e0;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  user-select: none;
+}
+
+.expense-day-header:hover {
+  background-color: #eeeeee;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.expense-count {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: normal;
+}
+
+.toggle-icon {
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.expense-day-group.is-expanded .toggle-icon {
+  transform: rotate(180deg);
+}
+
+.expense-day-group .expense-items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  max-height: 2000px; /* Valor mayor que la altura máxima esperada */
+}
+
+.expense-day-group:not(.is-expanded) .expense-items {
+  max-height: 0;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+/* Estilos para el primer día (hoy) */
+.expense-day-group:first-child .expense-day-header {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  font-weight: 600;
+}
+
+.expense-day-group:first-child .expense-day-header .expense-count {
+  color: #1565c0;
+  opacity: 0.8;
+}
+
+/* Estilos para el segundo día (ayer) */
+.expense-day-group:nth-child(2) .expense-day-header {
+  background-color: #f1f8e9;
+  color: #2e7d32;
+}
+
+.expense-day-group:nth-child(2) .expense-day-header .expense-count {
+  color: #2e7d32;
+  opacity: 0.8;
+}
+
+/* Mensaje cuando no hay gastos */
+.no-expenses {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+}
