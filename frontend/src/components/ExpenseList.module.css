@@ -1,8 +1,227 @@
-.expense-list {
+/* Contenedor principal del acordeón */
+.accordionRoot {
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Cada ítem del acordeón */
+.accordionItem {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: transparent;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.accordionItem:hover {
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para el primer ítem (hoy) */
+.accordionItem:first-child {
+  border-left: 3px solid #1976d2;
+}
+
+.accordionItem:first-child .accordionTrigger {
+  color: #0d47a1;
+  font-weight: 600;
+}
+
+.accordionItem:first-child .expenseCount {
+  color: #1976d2;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* Estilo para el segundo ítem (ayer) */
+.accordionItem:nth-child(2) {
+  border-left: 3px solid #2e7d32;
+}
+
+.accordionItem:nth-child(2) .accordionTrigger {
+  color: #1b5e20;
+  font-weight: 500;
+}
+
+.accordionItem:nth-child(2) .expenseCount {
+  color: #2e7d32;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* Estilo para los demás días */
+.accordionItem:not(:first-child):not(:nth-child(2)) {
+  border-left: 3px solid #5f6368;
+}
+
+.accordionItem:not(:first-child):not(:nth-child(2)) .accordionTrigger {
+  color: #3c4043;
+}
+
+.accordionItem:not(:first-child):not(:nth-child(2)) .expenseCount {
+  color: #5f6368;
+  font-weight: 500;
+}
+
+/* Header del acordeón */
+.accordionHeader {
+  margin: 0;
+  padding: 0;
+}
+
+/* Botón que activa el acordeón */
+.accordionTrigger {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  margin: 0;
+  border: none;
+  background-color: transparent;
+  color: #202124;
+  font-size: 0.95rem;
+  font-weight: 400;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-radius: 4px;
+}
+
+.accordionTrigger:hover {
+  background-color: rgba(32, 33, 36, 0.04);
+}
+
+.accordionTrigger[data-state='open'] {
+  font-weight: 500;
+  background-color: rgba(32, 33, 36, 0.02);
+}
+
+.accordionTrigger:focus-visible {
+  outline: 2px solid rgba(33, 150, 243, 0.5);
+  outline-offset: 2px;
+}
+
+/* Contenido del trigger */
+.triggerContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.triggerText {
+  text-transform: capitalize;
+}
+
+.expenseCount {
+  font-size: 0.8rem;
+  font-weight: normal;
+  opacity: 0.8;
+}
+
+/* Ícono de flecha */
+.accordionChevron {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  opacity: 0.7;
+  margin-left: 8px;
+  color: inherit;
+}
+
+.accordionTrigger[data-state='open'] > .accordionChevron {
+  transform: rotate(180deg);
+  opacity: 0.9;
+}
+
+.accordionTrigger:hover .accordionChevron {
+  opacity: 1;
+}
+
+/* Contenido del acordeón */
+.accordionContent {
+  overflow: hidden;
+  padding: 0 16px;
+  margin-top: -4px;
+  padding-bottom: 8px;
+}
+
+.accordionContent[data-state='open'] {
+  animation: slideDown 250ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.accordionContent[data-state='closed'] {
+  animation: slideUp 200ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Lista de gastos */
+.expenseList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Mensaje cuando no hay gastos */
+.noExpenses {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  font-style: italic;
+  background: white;
+  border-radius: 8px;
+  margin: 1rem 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Animaciones */
+@keyframes slideDown {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    height: var(--radix-accordion-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* Mejoras de accesibilidad */
+.accordionTrigger[data-state='open'] {
+  font-weight: 500;
+}
+
+/* Asegurar que el contenido tenga un espaciado consistente */
+.accordionContent > * {
+  padding: 0;
+  margin: 0;
+}
+
+/* Mejorar la apariencia de la lista de gastos */
+.expenseList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 8px;
 }
 
 .expense-day-group {
@@ -26,12 +245,20 @@
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
+  border-radius: 4px;
+  margin: 2px 0;
 }
 
 .expense-day-header:hover {
   background-color: #eeeeee;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.expense-day-header:active {
+  transform: translateY(0);
 }
 
 .header-content {
@@ -49,27 +276,44 @@
 .toggle-icon {
   display: flex;
   align-items: center;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+  opacity: 0.7;
+}
+
+.expense-day-header:hover .toggle-icon {
+  opacity: 1;
 }
 
 .expense-day-group.is-expanded .toggle-icon {
   transform: rotate(180deg);
 }
 
-.expense-day-group .expense-items {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.expense-items-container {
   overflow: hidden;
-  transition: max-height 0.3s ease-out;
-  max-height: 2000px; /* Valor mayor que la altura máxima esperada */
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-5px);
+  will-change: max-height, opacity, transform;
 }
 
-.expense-day-group:not(.is-expanded) .expense-items {
-  max-height: 0;
-  padding: 0;
+.expense-items-container.is-visible {
+  max-height: 5000px; /* Valor mayor que la altura máxima esperada */
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.expense-items {
   margin: 0;
-  border: none;
+  padding: 0.5rem 0;
+  list-style: none;
+}
+
+/* Asegurar que el contenido no tenga márgenes que afecten la transición */
+.expense-items > * {
+  margin: 0;
+  padding: 0.5rem 1rem;
 }
 
 /* Estilos para el primer día (hoy) */

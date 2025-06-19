@@ -11,7 +11,10 @@ const expenseSchema = new mongoose.Schema({
   paymentMethod: String,
   paidBy: String,
   amount: Number,
-  date: String,
+  date: {
+    type: Date,
+    default: () => new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+  },
 });
 
 const Expense = mongoose.model("Expense", expenseSchema);

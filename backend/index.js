@@ -67,28 +67,43 @@ const Expense = require("./models/Expense");
 
 app.post("/api/expenses", async (req, res) => {
   try {
-    const expense = new Expense(req.body);
-    console.log({ expense });
+    // Asegurarse de que la fecha esté en la zona horaria de Argentina
+    const expenseData = {
+      ...req.body,
+      date: req.body.date 
+        ? new Date(new Date(req.body.date).toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+        : new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+    };
+
+    const expense = new Expense(expenseData);
     await expense.save();
-    // Populate subcategory before sending response
-    const populatedExpense = await Expense.findById(expense._id).populate(
-      "subcategory"
-    );
-    res
-      .status(201)
-      .json({ message: "Expense registered", expense: populatedExpense });
+    const populatedExpense = await expense.populate("subcategory");
+    
+    res.status(201).json({ 
+      message: "Expense registered", 
+      expense: populatedExpense 
+    });
   } catch (err) {
     console.error("Error registering expense:", err);
-    res.status(500).json({ error: "Error registering expense", details: err });
+    res.status(500).json({ 
+      error: "Error registering expense", 
+      details: err.message 
+    });
   }
 });
 
 app.get("/api/expenses", async (req, res) => {
   try {
-    const expenses = await Expense.find().populate("subcategory");
+    const expenses = await Expense.find()
+      .populate("subcategory")
+      .sort({ date: -1 }); // Ordenar por fecha descendente
+      
     res.json(expenses);
   } catch (err) {
-    res.status(500).json({ error: "Error fetching expenses", details: err });
+    res.status(500).json({ 
+      error: "Error fetching expenses", 
+      details: err.message 
+    });
   }
 });
 
