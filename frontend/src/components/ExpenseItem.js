@@ -45,20 +45,27 @@ export default function ExpenseItem({
     setTooltipOpen(false);
   };
 
-  // Parsear fecha YYYY-MM-DD como local
-  function parseLocalDate(dateString) {
-    if (!dateString) return null;
-    const [year, month, day] = dateString.split("-");
-    return new Date(Number(year), Number(month) - 1, Number(day));
-  }
-
   // Formato de fecha
   const formatDate = (dateString) => {
     if (!dateString) return "";
-    const d = parseLocalDate(dateString);
-    const day = String(d.getDate()).padStart(2, "0");
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const year = d.getFullYear();
+    
+    // Si es un objeto Date, usarlo directamente
+    let date = dateString instanceof Date ? dateString : new Date(dateString);
+    
+    // Si la fecha no es válida, intentar con formato YYYY-MM-DD
+    if (isNaN(date.getTime())) {
+      const [year, month, day] = dateString.split("-");
+      if (year && month && day) {
+        date = new Date(Number(year), Number(month) - 1, Number(day));
+      }
+    }
+    
+    // Si aún no es una fecha válida, devolver cadena vacía
+    if (isNaN(date.getTime())) return "";
+    
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
