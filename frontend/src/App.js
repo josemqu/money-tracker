@@ -1,40 +1,13 @@
 import React from "react";
 import "./App.css";
-import {
-  ExpensesProvider,
-  useExpensesContext,
-} from "./context/ExpensesContext";
+import { useExpensesContext } from "./context/ExpensesContext";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import ChartsSection from "./ChartsSection";
 import ExpenseList from "./components/ExpenseList";
 import ExpenseFilters from "./components/ExpenseFilters";
 import ExpenseForm from "./components/ExpenseForm";
-import {
-  Tabs,
-  Tab,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  CircularProgress,
-  Backdrop,
-} from "@mui/material";
-import {
-  FaPlus,
-  FaWallet,
-  FaHome,
-  FaCar,
-  FaUtensils,
-  FaHeartbeat,
-  FaGift,
-  FaTshirt,
-  FaUserFriends,
-  FaRegStar,
-  FaMoneyBillWave,
-  FaQuestionCircle,
-  FaTrashAlt,
-  FaEdit,
-} from "react-icons/fa";
+import { Tabs, Tab, Box, Dialog, DialogTitle, DialogContent, CircularProgress, Backdrop } from "@mui/material";
+import { FaPlus } from "react-icons/fa";
 
 function App() {
   const [showModal, setShowModal] = React.useState(false);
@@ -120,7 +93,7 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
       >
         <CircularProgress color="inherit" />

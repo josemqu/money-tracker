@@ -101,7 +101,7 @@ export default function ChartsSection({ expenses = [] }) {
 
   // Función para parsear fechas de manera segura (formato YYYY-MM-DD)
   const parseDate = (dateStr) => {
-    const [year, month, day] = dateStr.split('-').map(Number);
+    const [year, month, day] = dateStr.split("-").map(Number);
     return { year, month, day };
   };
 
@@ -123,18 +123,18 @@ export default function ChartsSection({ expenses = [] }) {
   // Meses presentes en los gastos filtrados
   const { monthNumbers, months } = useMemo(() => {
     const monthSet = new Set();
-    
-    filteredExpenses.forEach(exp => {
+
+    filteredExpenses.forEach((exp) => {
       const { month } = parseDate(exp.date);
       monthSet.add(month - 1); // Convertir a 0-11 para consistencia
     });
-    
+
     const uniqueMonths = Array.from(monthSet).sort((a, b) => a - b);
 
     return {
       monthNumbers: uniqueMonths,
-      months: uniqueMonths.map(m => 
-        new Date(2000, m).toLocaleString('es', { month: 'short' })
+      months: uniqueMonths.map((m) =>
+        new Date(2000, m).toLocaleString("es", { month: "short" })
       ),
     };
   }, [filteredExpenses]);
@@ -154,14 +154,13 @@ export default function ChartsSection({ expenses = [] }) {
       );
     }
 
-
     const barChartExpenses =
       selectedMonth === -1
         ? filteredExpenses
         : filteredExpenses
-            .filter(exp => {
+            .filter((exp) => {
               const { month } = parseDate(exp.date);
-              return (month - 1) === selectedMonth; // Convertir a 0-11 para comparar
+              return month - 1 === selectedMonth; // Convertir a 0-11 para comparar
             })
             .map((e) => ({
               ...e,
@@ -173,13 +172,13 @@ export default function ChartsSection({ expenses = [] }) {
 
     return (
       <>
-        {tab === 0 && (
+        {tab === 0 && <BarChartByMonth expenses={barChartExpenses} />}
+        {tab === 1 && (
           <PieChartByCategory
             expenses={filteredExpenses}
             selectedMonth={selectedMonth}
           />
         )}
-        {tab === 1 && <BarChartByMonth expenses={barChartExpenses} />}
       </>
     );
   }, [tab, filteredExpenses, selectedMonth, isLoading, year]);
@@ -429,7 +428,7 @@ export default function ChartsSection({ expenses = [] }) {
           disabled={isLoading}
         >
           <Tab
-            label="Por Categoría"
+            label="Por Mes"
             sx={{
               color: "#fff",
               fontSize: 8,
@@ -438,7 +437,7 @@ export default function ChartsSection({ expenses = [] }) {
             }}
           />
           <Tab
-            label="Por Mes"
+            label="Por Categoría"
             sx={{
               color: "#fff",
               fontSize: 8,

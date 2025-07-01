@@ -17,39 +17,7 @@ import {
   FaTools,
 } from "react-icons/fa";
 
-// Función para formatear la fecha
-const formatDate = (dateString) => {
-  if (!dateString) return "";
-
-  const date = new Date(dateString);
-  const now = new Date();
-
-  // Obtener fechas sin hora (solo día)
-  const getDateKey = (d) => {
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  };
-
-  const dateKey = getDateKey(date);
-  const today = getDateKey(now);
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  // Comparar fechas
-  if (dateKey.getTime() === today.getTime()) {
-    return "Hoy";
-  } else if (dateKey.getTime() === yesterday.getTime()) {
-    return "Ayer";
-  } else {
-    // Formatear fecha en español de Argentina
-    return date.toLocaleDateString("es-AR", {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-      timeZone: "America/Argentina/Buenos_Aires",
-    });
-  }
-};
+import { formatDateWithRelativeDay } from "../utils/dateUtils";
 
 // Función para obtener la clave de fecha (solo fecha, sin hora)
 const getDateKey = (dateString) => {
@@ -164,7 +132,7 @@ const ExpenseList = ({ expenses, onEdit, onDelete }) => {
               <Accordion.Trigger className={styles.accordionTrigger}>
                 <div className={styles.accordionHeader}>
                   <span className={styles.dayName}>
-                    {formatDate(dayExpenses[0].date)}
+                    {formatDateWithRelativeDay(dayExpenses[0].date)}
                   </span>
                   <div className={styles.expenseCount}>
                     {dayExpenses.length}{" "}

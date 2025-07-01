@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { formatDateWithRelativeDay } from "../utils/dateUtils";
 import Card from "@mui/material/Card";
 import styles from "./ExpenseItem.module.css";
 import CardContent from "@mui/material/CardContent";
@@ -45,30 +46,6 @@ export default function ExpenseItem({
     setTooltipOpen(false);
   };
 
-  // Formato de fecha
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    
-    // Si es un objeto Date, usarlo directamente
-    let date = dateString instanceof Date ? dateString : new Date(dateString);
-    
-    // Si la fecha no es válida, intentar con formato YYYY-MM-DD
-    if (isNaN(date.getTime())) {
-      const [year, month, day] = dateString.split("-");
-      if (year && month && day) {
-        date = new Date(Number(year), Number(month) - 1, Number(day));
-      }
-    }
-    
-    // Si aún no es una fecha válida, devolver cadena vacía
-    if (isNaN(date.getTime())) return "";
-    
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
-
   // Formato de monto
   const formatAmount = (amount) => {
     const nf = new Intl.NumberFormat("de-DE", {
@@ -93,7 +70,7 @@ export default function ExpenseItem({
         <div className={styles.dateBox}>
           <FaCalendarAlt color="#a0aec0" size={14} />
           <Typography variant="body2" sx={{ color: "#e0e6f0" }}>
-            {formatDate(expense.date)}
+            {formatDateWithRelativeDay(expense.date)}
           </Typography>
         </div>
         <Tooltip
