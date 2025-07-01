@@ -22,10 +22,9 @@ import { formatDateWithRelativeDay } from "../utils/dateUtils";
 // Función para obtener la clave de fecha (solo fecha, sin hora)
 const getDateKey = (dateString) => {
   if (!dateString) return "";
-  const date = new Date(dateString);
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate())
-    .toISOString()
-    .split("T")[0];
+  // Si la fecha ya viene en formato YYYY-MM-DD, la usamos directamente
+  // Si viene con hora, tomamos solo la parte de la fecha
+  return dateString.slice(0, 10);
 };
 
 // Función para agrupar gastos por fecha

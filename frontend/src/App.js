@@ -6,7 +6,16 @@ import ChartsSection from "./ChartsSection";
 import ExpenseList from "./components/ExpenseList";
 import ExpenseFilters from "./components/ExpenseFilters";
 import ExpenseForm from "./components/ExpenseForm";
-import { Tabs, Tab, Box, Dialog, DialogTitle, DialogContent, CircularProgress, Backdrop } from "@mui/material";
+import {
+  Tabs,
+  Tab,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  CircularProgress,
+  Backdrop,
+} from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 
 function App() {
@@ -54,11 +63,11 @@ function App() {
   const handleSubmit = (form) => {
     const data = { ...form };
     if (form.date) {
-      // Ajustar a fecha local para evitar desfase por timezone
-      const local = new Date(
-        form.date.getTime() - form.date.getTimezoneOffset() * 60000
-      );
-      data.date = local.toISOString().slice(0, 10);
+      // Tomar año, mes y día directamente del objeto Date, sin ajustar por zona horaria
+      const year = form.date.getFullYear();
+      const month = String(form.date.getMonth() + 1).padStart(2, "0");
+      const day = String(form.date.getDate()).padStart(2, "0");
+      data.date = `${year}-${month}-${day}`;
     } else {
       data.date = undefined;
     }
@@ -69,6 +78,7 @@ function App() {
         closeModal();
       });
     }
+    console.log("data", data);
   };
 
   // Limpiar todos los gastos

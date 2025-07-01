@@ -67,27 +67,40 @@ const Expense = require("./models/Expense");
 
 app.post("/api/expenses", async (req, res) => {
   try {
-    // Asegurarse de que la fecha esté en la zona horaria de Argentina
+    let dateToSave;
+    if (req.body.date) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(req.body.date)) {
+        // Caso YYYY-MM-DD
+        const [year, month, day] = req.body.date.split("-").map(Number);
+        dateToSave = new Date(Date.UTC(year, month - 1, day, 3, 0, 0));
+      } else {
+        // Caso con hora: ajustar siempre a las 03:00:00 UTC
+        let d = new Date(req.body.date);
+        d.setUTCHours(3, 0, 0, 0);
+        dateToSave = d;
+      }
+    } else {
+      dateToSave = new Date();
+      dateToSave.setUTCHours(3, 0, 0, 0);
+    }
     const expenseData = {
       ...req.body,
-      date: req.body.date 
-        ? new Date(new Date(req.body.date).toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
-        : new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Argentina/Buenos_Aires' }))
+      date: dateToSave,
     };
 
     const expense = new Expense(expenseData);
     await expense.save();
     const populatedExpense = await expense.populate("subcategory");
-    
-    res.status(201).json({ 
-      message: "Expense registered", 
-      expense: populatedExpense 
+
+    res.status(201).json({
+      message: "Expense registered",
+      expense: populatedExpense,
     });
   } catch (err) {
     console.error("Error registering expense:", err);
-    res.status(500).json({ 
-      error: "Error registering expense", 
-      details: err.message 
+    res.status(500).json({
+      error: "Error registering expense",
+      details: err.message,
     });
   }
 });
@@ -97,12 +110,12 @@ app.get("/api/expenses", async (req, res) => {
     const expenses = await Expense.find()
       .populate("subcategory")
       .sort({ date: -1 }); // Ordenar por fecha descendente
-      
+
     res.json(expenses);
   } catch (err) {
-    res.status(500).json({ 
-      error: "Error fetching expenses", 
-      details: err.message 
+    res.status(500).json({
+      error: "Error fetching expenses",
+      details: err.message,
     });
   }
 });
@@ -136,7 +149,24 @@ app.delete("/api/expenses/all", async (req, res) => {
 // Editar gasto
 app.put("/api/expenses/:id", async (req, res) => {
   try {
-    const expense = await Expense.findByIdAndUpdate(req.params.id, req.body, {
+    let dateToSave;
+    if (req.body.date) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(req.body.date)) {
+        // Caso YYYY-MM-DD
+        const [year, month, day] = req.body.date.split("-").map(Number);
+        dateToSave = new Date(Date.UTC(year, month - 1, day, 3, 0, 0));
+      } else {
+        // Caso con hora: ajustar siempre a las 03:00:00 UTC
+        let d = new Date(req.body.date);
+        d.setUTCHours(3, 0, 0, 0);
+        dateToSave = d;
+      }
+    }
+    const updateData = {
+      ...req.body,
+      ...(dateToSave && { date: dateToSave }),
+    };
+    const expense = await Expense.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
     }).populate("subcategory");
     if (expense) {
