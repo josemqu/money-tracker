@@ -44,6 +44,8 @@ export default function ChartsSection({ expenses = [] }) {
         }
 
         setCategories(Array.isArray(cats) ? cats : []);
+        // Activar todas las categorías por defecto
+        setSelectedCategories(Array.isArray(cats) ? cats : []);
       } catch (err) {
         console.error("Error al cargar categorías:", err);
       } finally {
@@ -196,125 +198,91 @@ export default function ChartsSection({ expenses = [] }) {
           mt: 2,
         }}
       >
-        <FormControl sx={{ width: "100%" }} size="small">
-          <InputLabel sx={{ color: "#fff" }} shrink>
-            Categoría
-          </InputLabel>
-          <Select
-            multiple
-            value={selectedCategories}
-            onChange={handleCategoryChange}
-            label="Categoría"
-            displayEmpty
-            renderValue={(selected) => {
-              if (selected.length === 0) {
-                return "Todas";
+        {/* Filtro de categorías como botones */}
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
+          {/* Botón Todas */}
+          <Box
+            component="button"
+            onClick={() => {
+              if (selectedCategories.length === categories.length) {
+                setSelectedCategories([]);
+              } else {
+                setSelectedCategories(categories);
               }
-              return (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 0.5,
-                    maxWidth: "100%",
-                  }}
-                >
-                  {selected.map((value) => (
-                    <Box
-                      key={value}
-                      sx={{
-                        bgcolor: "rgba(255, 255, 255, 0.1)",
-                        px: 0.75,
-                        py: 0.25,
-                        borderRadius: 1,
-                        fontSize: "0.8rem",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        maxWidth: "100%",
-                      }}
-                    >
-                      {value}
-                    </Box>
-                  ))}
-                </Box>
-              );
             }}
             sx={{
-              color: "#fff",
-              borderColor: "#fff",
-              "& .MuiSelect-select": {
-                display: "flex",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: "4px",
-                maxWidth: "100%",
-                overflow: "hidden",
+              px: 2,
+              py: 1,
+              borderRadius: 2,
+              border:
+                selectedCategories.length === categories.length
+                  ? "2px solid #4f8cff"
+                  : "1px solid #bbb",
+              background:
+                selectedCategories.length === categories.length
+                  ? "#232b38"
+                  : "rgba(255,255,255,0.04)",
+              color:
+                selectedCategories.length === categories.length
+                  ? "#4f8cff"
+                  : "#bbb",
+              fontWeight: 700,
+              fontSize: "1rem",
+              cursor: "pointer",
+              outline: "none",
+              transition: "all 0.15s",
+              boxShadow:
+                selectedCategories.length === categories.length
+                  ? "0 2px 8px rgba(79,140,255,0.08)"
+                  : "none",
+              mr: 1,
+              "&:hover": {
+                borderColor: "#4f8cff",
+                color: "#4f8cff",
               },
             }}
-            MenuProps={{
-              PaperProps: {
-                sx: {
-                  maxHeight: 300,
-                  width: 200,
-                  bgcolor: "#2d2d2d",
-                  "& .MuiMenuItem-root": {
-                    whiteSpace: "normal",
-                    minHeight: "32px",
-                    padding: "6px 16px",
-                  },
-                },
-              },
-            }}
-            disabled={isLoading}
           >
-            <Box
-              sx={{
-                px: 1,
-                py: 0.5,
-                borderBottom: "1px solid rgba(255, 255, 255, 0.12)",
-              }}
-            >
-              <Box sx={{ display: "flex", gap: 1, mb: 0.5 }}>
-                <MenuItem
-                  dense
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedCategories([...categories]);
-                  }}
-                  sx={{
-                    flex: 1,
-                    fontSize: "0.8rem",
-                    textAlign: "center",
-                    bgcolor: "rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  Seleccionar todas
-                </MenuItem>
-                <MenuItem
-                  dense
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedCategories([]);
-                  }}
-                  sx={{
-                    flex: 1,
-                    fontSize: "0.8rem",
-                    textAlign: "center",
-                    bgcolor: "rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  Limpiar
-                </MenuItem>
-              </Box>
-            </Box>
-            {categories.map((cat) => (
-              <MenuItem key={cat} value={cat}>
+            Todas
+          </Box>
+          {categories.map((cat) => {
+            const selected = selectedCategories.includes(cat);
+            return (
+              <Box
+                key={cat}
+                component="button"
+                onClick={() => {
+                  setSelectedCategories((prev) =>
+                    prev.includes(cat)
+                      ? prev.filter((c) => c !== cat)
+                      : [...prev, cat]
+                  );
+                }}
+                sx={{
+                  px: 2,
+                  py: 1,
+                  borderRadius: 2,
+                  border: selected ? "2px solid #4f8cff" : "1px solid #444",
+                  background: selected ? "#232b38" : "rgba(255,255,255,0.04)",
+                  color: selected ? "#4f8cff" : "#fff",
+                  fontWeight: selected ? 700 : 400,
+                  fontSize: "1rem",
+                  cursor: "pointer",
+                  outline: "none",
+                  transition: "all 0.15s",
+                  boxShadow: selected
+                    ? "0 2px 8px rgba(79,140,255,0.08)"
+                    : "none",
+                  "&:hover": {
+                    borderColor: "#4f8cff",
+                    color: "#4f8cff",
+                  },
+                }}
+              >
                 {cat}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+              </Box>
+            );
+          })}
+        </Box>
 
         <FormControl sx={{ maxWidth: 200 }} size="small">
           <InputLabel sx={{ color: "#fff" }}>Año</InputLabel>
@@ -407,7 +375,6 @@ export default function ChartsSection({ expenses = [] }) {
       months,
       selectedMonth,
       handleYearChange,
-      handleCategoryChange,
       handleClearFilters,
       isLoading,
       availableYears,
