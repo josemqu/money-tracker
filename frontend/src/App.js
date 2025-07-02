@@ -145,7 +145,6 @@ function App() {
                 alignItems: "center",
                 px: 2,
                 zIndex: 1300,
-                background: "transparent",
               }}
             >
               <span
@@ -153,7 +152,7 @@ function App() {
                   fontWeight: 800,
                   fontSize: "1.45rem",
                   letterSpacing: "0.03em",
-                  color: "#4f8cff",
+                  color: "#a3a4a7",
                   fontFamily: "inherit",
                   zIndex: 1000,
                 }}
