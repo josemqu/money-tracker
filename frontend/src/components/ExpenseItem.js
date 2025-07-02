@@ -70,7 +70,11 @@ export default function ExpenseItem({
         <div className={styles.dateBox}>
           <FaCalendarAlt color="#a0aec0" size={14} />
           <Typography variant="body2" sx={{ color: "#e0e6f0" }}>
-            {formatDateWithRelativeDay(expense.date)}
+            {new Date(expense.date).toLocaleDateString("es-AR", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+            })}
           </Typography>
         </div>
         <Tooltip
