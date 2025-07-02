@@ -95,8 +95,13 @@ function App() {
       !(e.place || "").toLowerCase().includes(filters.place.toLowerCase())
     )
       ok = false;
-    if (filters.subcategory && e.subcategory !== filters.subcategory)
-      ok = false;
+    if (filters.subcategory) {
+      let subcatName = e.subcategory;
+      if (typeof subcatName === "object" && subcatName !== null) {
+        subcatName = subcatName.name;
+      }
+      if (subcatName !== filters.subcategory) ok = false;
+    }
     return ok;
   });
 
