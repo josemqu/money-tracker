@@ -71,7 +71,8 @@ const ExpenseList = ({ expenses, onEdit, onDelete }) => {
 
   // Efecto para actualizar los ítems abiertos cuando cambian las fechas
   React.useEffect(() => {
-    setOpenItems(dates);
+    setOpenItems([]); // Cierra todos primero para forzar el recalculo de espacio
+    setTimeout(() => setOpenItems(dates), 0); // Luego abre los nuevos acordeones
   }, [dates]);
   const getCategoryIcon = (category) => {
     const color = CATEGORY_COLORS[category]?.color || "#bbb";
