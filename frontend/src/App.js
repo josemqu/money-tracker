@@ -108,86 +108,76 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 2 }}
         open={loading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Box
-        sx={{
-          bgcolor: "#181c24",
-          minHeight: "100vh",
-          color: "#fff",
-          padding: "0 0 80px 0",
-        }}
-      >
-        <Tabs
-          value={mainTab}
-          onChange={(_, v) => setMainTab(v)}
-          textColor="inherit"
-          indicatorColor="primary"
-          centered
-          sx={{ mb: 2, zIndex: 1000, borderBottom: 1, borderColor: "divider" }}
+      {!loading && (
+        <Box
+          sx={{
+            bgcolor: "#181c24",
+            minHeight: "100vh",
+            color: "#fff",
+            padding: "0 0 80px 0",
+          }}
         >
-          <Tab label="Gastos" />
-          <Tab label="Gráficos" />
-        </Tabs>
-        <div className="main-content">
-          {mainTab === 0 && (
-            <section
-              className="App"
-              style={{
-                margin: "32px auto 0 auto",
-              }}
-            >
-              <ExpenseFilters filters={filters} setFilters={setFilters} />
-              <ExpenseList
-                expenses={filteredExpenses}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
-              <button
-                className="add-expense-btn"
-                onClick={openModal}
-                aria-label="Agregar Gasto"
-                style={{ marginTop: 16 }}
+          <Tabs
+            value={mainTab}
+            onChange={(_, v) => setMainTab(v)}
+            textColor="inherit"
+            indicatorColor="primary"
+            centered
+            sx={{
+              mb: 2,
+              zIndex: 1000,
+              borderBottom: 1,
+              borderColor: "divider",
+            }}
+          >
+            <Tab label="Gastos" />
+            <Tab label="Gráficos" />
+          </Tabs>
+          <div className="main-content">
+            {mainTab === 0 && (
+              <section
+                className="App"
+                style={{
+                  margin: "32px auto 0 auto",
+                }}
               >
-                <FaPlus size={28} color="#fff" />
-              </button>
-            </section>
-          )}
-          {mainTab === 1 && <ChartsSection expenses={expenses} />}
-        </div>
-        <Dialog open={showModal} onClose={closeModal} maxWidth="xs" fullWidth>
-          <DialogTitle
-            sx={{
-              bgcolor: "#232b38",
-              color: "#fff",
-              fontWeight: 700,
-              pb: 1,
-              borderTopLeftRadius: 4,
-              borderTopRightRadius: 4,
-            }}
-          >
-            {editingExpense ? "Editar gasto" : "Agregar gasto"}
-          </DialogTitle>
-          <DialogContent
-            sx={{
-              bgcolor: "#232323",
-              color: "#fff",
-              borderBottomLeftRadius: 4,
-              borderBottomRightRadius: 4,
-              p: 3,
-            }}
-          >
-            <ExpenseForm
-              onSubmit={handleSubmit}
-              onCancel={closeModal}
-              editingExpense={editingExpense}
-            />
-          </DialogContent>
-        </Dialog>
-      </Box>
+                <ExpenseFilters filters={filters} setFilters={setFilters} />
+                <ExpenseList
+                  expenses={filteredExpenses}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
+                <button
+                  className="add-expense-btn"
+                  onClick={openModal}
+                  aria-label="Agregar Gasto"
+                  style={{ marginTop: 16 }}
+                >
+                  <FaPlus size={28} color="#fff" />
+                </button>
+              </section>
+            )}
+            {mainTab === 1 && <ChartsSection expenses={expenses} />}
+          </div>
+        </Box>
+      )}
+      <Dialog open={showModal} onClose={closeModal} maxWidth="xs" fullWidth>
+        <DialogTitle>
+          {editingExpense ? "Editar Gasto" : "Agregar Gasto"}
+        </DialogTitle>
+        <DialogContent>
+          <ExpenseForm
+            onSubmit={handleSubmit}
+            onCancel={closeModal}
+            editingExpense={editingExpense}
+          />
+        </DialogContent>
+      </Dialog>
     </ThemeProvider>
   );
 }
