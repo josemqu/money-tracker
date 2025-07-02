@@ -20,11 +20,18 @@ import USERS from "../constants/users";
 import { fetchCategories } from "../services/categoriesServices";
 import Box from "@mui/material/Box";
 
-// Parsear fecha YYYY-MM-DD como local
+// Parsear fecha YYYY-MM-DD o ISO como local
 function parseLocalDate(dateString) {
   if (!dateString) return null;
-  const [year, month, day] = dateString.split("-");
-  return new Date(Number(year), Number(month) - 1, Number(day));
+  if (
+    typeof dateString === "string" &&
+    /^\d{4}-\d{2}-\d{2}$/.test(dateString)
+  ) {
+    const [year, month, day] = dateString.split("-");
+    return new Date(Number(year), Number(month) - 1, Number(day));
+  }
+  // Si es ISO o Date, que lo resuelva el constructor
+  return new Date(dateString);
 }
 
 const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
