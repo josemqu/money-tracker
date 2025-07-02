@@ -134,14 +134,14 @@ const ExpenseForm = ({ onSubmit, onCancel, editingExpense }) => {
         setSubcategories((prev) => [...prev, result.subcategory]);
         setForm((prev) => ({
           ...prev,
-          subcategory: result.subcategory._id,
+          subcategory: result.subcategory.name,
           newSubcategory: "",
         }));
       } else if (result && result._id) {
         setSubcategories((prev) => [...prev, result]);
         setForm((prev) => ({
           ...prev,
-          subcategory: result._id,
+          subcategory: result.name,
           newSubcategory: "",
         }));
       }
