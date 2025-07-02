@@ -122,22 +122,70 @@ function App() {
             padding: "0 0 80px 0",
           }}
         >
-          <Tabs
-            value={mainTab}
-            onChange={(_, v) => setMainTab(v)}
-            textColor="inherit"
-            indicatorColor="primary"
-            centered
+          <Box
             sx={{
-              mb: 2,
-              zIndex: 1000,
-              borderBottom: 1,
-              borderColor: "divider",
+              position: "relative",
+              borderBottom: "1px solid #222",
+              minHeight: 56,
+              px: 2,
+              display: "flex",
+              alignItems: "center",
+              background: "#181c24",
+              zIndex: 1201,
             }}
           >
-            <Tab label="Gastos" />
-            <Tab label="Gráficos" />
-          </Tabs>
+            {/* Nombre de la app a la izquierda, absoluto */}
+            <Box
+              sx={{
+                position: "absolute",
+                left: 0,
+                top: 0,
+                height: 56,
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+                px: 2,
+                zIndex: 1300,
+                background: "transparent",
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: 800,
+                  fontSize: "1.45rem",
+                  letterSpacing: "0.03em",
+                  color: "#4f8cff",
+                  fontFamily: "inherit",
+                  zIndex: 1000,
+                }}
+              >
+                Gastos Claros
+              </span>
+            </Box>
+            {/* Tabs centrados respecto al viewport */}
+            <Box
+              sx={{
+                position: "absolute",
+                left: "50%",
+                top: 0,
+                transform: "translateX(-50%)",
+                height: 56,
+                display: "flex",
+                alignItems: "center",
+                width: "max-content",
+              }}
+            >
+              <Tabs
+                value={mainTab}
+                onChange={(_, v) => setMainTab(v)}
+                textColor="inherit"
+                indicatorColor="primary"
+                sx={{ zIndex: 1000 }}
+              >
+                <Tab label="Gastos" />
+                <Tab label="Gráficos" />
+              </Tabs>
+            </Box>
+          </Box>
           <div className="main-content">
             {mainTab === 0 && (
               <section
