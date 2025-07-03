@@ -141,24 +141,19 @@ function App() {
                 left: 0,
                 top: 0,
                 height: 56,
-                display: { xs: "none", md: "flex" },
+                display: "flex",
                 alignItems: "center",
                 px: 2,
                 zIndex: 1300,
               }}
             >
-              <span
-                style={{
-                  fontWeight: 800,
-                  fontSize: "1.45rem",
-                  letterSpacing: "0.03em",
-                  color: "#a3a4a7",
-                  fontFamily: "inherit",
-                  zIndex: 1000,
-                }}
-              >
-                Gastos Claros
-              </span>
+              <span className="app-title">Gastos Claros</span>
+              <img
+                src="/icon-t.svg"
+                alt="App icon"
+                className="app-icon"
+                style={{ height: 36, width: 36, marginLeft: 8 }}
+              />
             </Box>
             {/* Tabs centrados respecto al viewport */}
             <Box
