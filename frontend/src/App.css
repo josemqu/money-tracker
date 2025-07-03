@@ -651,3 +651,9 @@ li,
     display: inline-block;
   }
 }
+@media (max-width: 450px) {
+  .app-title,
+  .app-icon {
+    display: none;
+  }
+}
